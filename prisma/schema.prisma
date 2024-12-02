@@ -1,0 +1,142 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id     String @id @default(uuid())
+  email  String @unique
+  role   String
+  office String
+}
+
+model Admission {
+  id            String        @id @default(uuid())
+  studentId     String
+  admissionNo   String
+  admissionType String
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  status        String
+  student       Student       @relation(fields: [studentId], references: [studentId])
+  requirements  Requirement[]
+}
+
+model Requirement {
+  id          Int       @id @default(autoincrement())
+  name        String
+  imageUrl    String?
+  isSubmitted Boolean
+  admissionId String
+  admission   Admission @relation(fields: [admissionId], references: [id], onDelete: Cascade)
+}
+
+model Student {
+  studentId         String             @id @unique
+  firstName         String
+  middleName        String?
+  lastName          String
+  course            String
+  program           String
+  yearLevel         String
+  email             String
+  classification    String
+  contactNumber     String
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  Admission         Admission[]
+  disciplinaryNotes DisciplinaryNote[] // Establishes a one-to-many relationship with DisciplinaryNote
+}
+
+model DisciplinaryNote {
+  id        String   @id @default(uuid())
+  dateGiven DateTime
+  note      String
+  student   Student  @relation(fields: [studentId], references: [studentId])
+  studentId String // Foreign key to relate to Student
+}
+
+model EquipmentRequest {
+  id               String               @id @default(uuid())
+  requestor        String
+  eventId          String
+  dateRequested    DateTime
+  dateToBeReturned DateTime
+  status           String
+  equipments       RequestedEquipment[]
+
+  event SchoolEvent @relation(fields: [eventId], references: [id]) // Establishes the relation to SchoolEvent
+}
+
+model Equipment {
+  id          String               @id @default(uuid())
+  name        String
+  brand       String
+  price       Int
+  quantity    Int
+  dateBought  DateTime
+  isAvailable Boolean              @default(false)
+  imageUrl    String?
+  dateAdded   DateTime             @default(now())
+  requests    RequestedEquipment[]
+}
+
+model RequestedEquipment {
+  id          String @id @default(uuid())
+  equipmentId String
+  requestId   String
+  quantity    Int // Quantity requested for this equipment
+  status      String
+
+  equipment Equipment        @relation(fields: [equipmentId], references: [id])
+  request   EquipmentRequest @relation(fields: [requestId], references: [id])
+
+  @@unique([equipmentId, requestId]) // Ensures each equipment-request pair is unique
+}
+
+model SchoolEvent {
+  id                          String             @id @default(uuid())
+  eventType                   String
+  summary                     String
+  location                    String?
+  start                       DateTime
+  end                         DateTime
+  colorId                     String             @default("1")
+  status                      String             @default("Pending")
+  createdAt                   DateTime           @default(now())
+  updatedAt                   DateTime           @updatedAt
+  isWithinSchool              Boolean
+  hasEvaluationReport         Boolean            @default(false)
+  hasPostActivityRequirements Boolean            @default(false)
+  calendarId                  String
+  EquipmentRequest            EquipmentRequest[]
+}
+
+model Opportunity {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  department  String
+  program     String
+  dateCreated DateTime @default(now())
+}
+
+model CertificateRequest {
+  id              String   @id @default(uuid())
+  studentId       String
+  name            String
+  purpose         String?
+  schoolYear      String?
+  position        String?
+  organization    String?
+  controlNumber   String
+  osasDean        String
+  certificateType String
+  status          String
+  dateCreated     DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
