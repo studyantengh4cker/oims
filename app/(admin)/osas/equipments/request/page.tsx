@@ -1,7 +1,7 @@
 "use client";
 
-import Loading from "@/app/loading";
 import RequestEquipmentsForm from "@/components/forms/EquipmentRequestForm";
+import Loading from "@/components/Loading";
 import { useEvent } from "@/hooks/useEvent";
 
 import { useSearchParams } from "next/navigation";

@@ -6,6 +6,7 @@ import { google } from "googleapis";
 import { revalidatePath } from "next/cache";
 import { getGraduatingStudents } from "./student.action";
 import { auth } from "@/lib/auth";
+import { createActivityLog } from "./log.action";
 
 const oauth2Client = new google.auth.OAuth2();
 
@@ -19,6 +20,8 @@ export const createOpportunity = async (data: OpportunityFormData) => {
     revalidatePath("/");
   } catch (error) {
     console.log(error);
+  } finally {
+    await createActivityLog("Created a Opportunity", "Career");
   }
 };
 

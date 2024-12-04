@@ -32,6 +32,7 @@ import { updateEquipment, createEquipment } from "@/actions/equipment.action"; /
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { cn } from "@/lib/utils";
 import { Calendar } from "../ui/calendar";
+import { useRouter } from "next/navigation";
 
 const EquipmentFormSchema = z.object({
   id: z.string().optional(),
@@ -70,6 +71,8 @@ export function EquipmentForm({ defaultValues }: EquipmentFormProps) {
     },
   });
 
+  const router = useRouter();
+
   const handleImageUpload = async (file: File) => {
     const storageRef = ref(storage, `equipment-images/${file.name}`);
     await uploadBytes(storageRef, file);
@@ -91,6 +94,7 @@ export function EquipmentForm({ defaultValues }: EquipmentFormProps) {
         } else {
           // Create new equipment
           await createEquipment(values);
+          router.push(`/osas/equipments`);
         }
       } catch (err) {
         setError(err instanceof Error ? err.message : "An error occurred");
@@ -104,11 +108,11 @@ export function EquipmentForm({ defaultValues }: EquipmentFormProps) {
         onSubmit={form.handleSubmit(handleSubmit)}
         className="space-y-6 p-4"
       >
-        <section className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <section className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Left Column - Form Fields */}
           <div className="lg:col-span-2 space-y-6">
             <h1 className="font-bold text-primary text-lg mb-5">
-              {defaultValues ? "Edit Equipment" : "Add Equipment"}
+              {defaultValues ? "Edit Equipment" : ""}
             </h1>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <FormField

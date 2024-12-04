@@ -2,6 +2,8 @@ import { getEventById } from "@/actions/event.action";
 import { EventForm } from "@/components/forms/EventForm";
 import React from "react";
 import Equipments from "../Equipments";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default async function EventPage({
   params,
@@ -21,6 +23,9 @@ export default async function EventPage({
 
   return (
     <main className="p-4">
+      <Button asChild variant="link">
+        <Link href="/osas/events">Back</Link>
+      </Button>
       <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="bg-white p-8 drop-shadow-md rounded-lg">
           <h1 className="text-primary font-bold text-2xl mb-10">Event</h1>

@@ -4,7 +4,7 @@ import { PDFViewer } from "@react-pdf/renderer";
 import { useEffect, useState } from "react";
 import { getEventsWithDetails } from "@/actions/event.action";
 import EventSummaryReport from "./EventReport";
-import Loading from "@/app/loading";
+import Loading from "@/components/Loading";
 
 export default function EventsReportPage() {
   const [events, setEvents] = useState<any[]>([]);

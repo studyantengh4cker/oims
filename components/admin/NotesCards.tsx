@@ -1,6 +1,8 @@
-"use client"
+"use client";
 
 import { useState } from "react";
+import { Button } from "../ui/button";
+import Link from "next/link";
 
 interface DisciplinaryNote {
   id: string;
@@ -27,20 +29,27 @@ interface DisciplinaryNotesCardsProps {
   students: Student[];
 }
 
-export function DisciplinaryNotesCards({ students }: DisciplinaryNotesCardsProps) {
+export function DisciplinaryNotesCards({
+  students,
+}: DisciplinaryNotesCardsProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCourse, setSelectedCourse] = useState("");
 
   // Filter students based on search term and selected course
   const filteredStudents = students.filter((student) => {
-    const matchesName =
-      `${student.firstName} ${student.lastName}`.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCourse = selectedCourse ? student.course === selectedCourse : true;
+    const matchesName = `${student.firstName} ${student.lastName}`
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+    const matchesCourse = selectedCourse
+      ? student.course === selectedCourse
+      : true;
     return matchesName && matchesCourse && student.disciplinaryNotes.length > 0;
   });
 
   // Extract unique courses for filter options
-  const courses = Array.from(new Set(students.map((student) => student.course)));
+  const courses = Array.from(
+    new Set(students.map((student) => student.course))
+  );
 
   return (
     <div className="space-y-4">
@@ -70,25 +79,49 @@ export function DisciplinaryNotesCards({ students }: DisciplinaryNotesCardsProps
       {/* Display Cards Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {filteredStudents.map((student) => (
-          <div key={student.studentId} className="border rounded-lg p-4 shadow-md">
+          <div
+            key={student.studentId}
+            className="border rounded-lg p-4 shadow-md"
+          >
             <h2 className="text-xl font-semibold mb-2">
               {student.firstName} {student.middleName || ""} {student.lastName}
             </h2>
-            <p><strong>Course:</strong> {student.course}</p>
-            <p><strong>Program:</strong> {student.program}</p>
-            <p><strong>Contact:</strong> {student.contactNumber}</p>
-            <p><strong>Email:</strong> {student.email}</p>
-            <p><strong>Disciplinary Notes:</strong> {student.disciplinaryNotes.length}</p>
+            <p>
+              <strong>Course:</strong> {student.course}
+            </p>
+            <p>
+              <strong>Program:</strong> {student.program}
+            </p>
+            <p>
+              <strong>Contact:</strong> {student.contactNumber}
+            </p>
+            <p>
+              <strong>Email:</strong> {student.email}
+            </p>
+            <p>
+              <strong>Disciplinary Notes:</strong>{" "}
+              {student.disciplinaryNotes.length}
+            </p>
 
             {/* Disciplinary Notes List */}
             <ul className="mt-3 space-y-2">
               {student.disciplinaryNotes.map((note) => (
                 <li key={note.id} className="border-t pt-2">
-                  <p><strong>Date:</strong> {new Date(note.dateGiven).toLocaleDateString()}</p>
-                  <p><strong>Note:</strong> {note.note}</p>
+                  <p>
+                    <strong>Date:</strong>{" "}
+                    {new Date(note.dateGiven).toLocaleDateString()}
+                  </p>
+                  <p>
+                    <strong>Note:</strong> {note.note}
+                  </p>
                 </li>
               ))}
             </ul>
+            <div className="w-full flex justify-end">
+              <Button>
+                <Link href={`notes/${student.studentId}`}>View</Link>
+              </Button>
+            </div>
           </div>
         ))}
       </div>

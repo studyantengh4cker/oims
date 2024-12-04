@@ -1,5 +1,6 @@
 import { SideBar } from "@/components/admin/SideBar";
 import { Topbar } from "@/components/admin/TopBar";
+import Loading from "@/components/Loading";
 import SessionProvider from "@/components/SessionProvider";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { auth } from "@/lib/auth";
@@ -20,9 +21,7 @@ export default async function AdminLayout({
         <Topbar />
         <SideBar />
         <ScrollArea className="bg-secondary flex-1 max-h-screen min-h-screen pt-24 px-5 pb-5">
-          <Suspense fallback={<>Loading</>}>
-            {children}
-          </Suspense>
+          <Suspense fallback={<Loading />}>{children}</Suspense>
         </ScrollArea>
       </main>
     </SessionProvider>

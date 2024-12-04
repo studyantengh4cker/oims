@@ -6,6 +6,7 @@ import prisma from "@/lib/db";
 import { db } from "@/lib/firebase-admin";
 import { google } from "googleapis"; // Move the import here for clarity
 import { revalidatePath } from "next/cache";
+import { createActivityLog } from "./log.action";
 
 const oauth2Client = new google.auth.OAuth2();
 const calendar = google.calendar({ version: "v3", auth: oauth2Client });
@@ -29,6 +30,8 @@ export async function setCalendarID(id: string) {
     revalidatePath("/osas/events");
   } catch (error) {
     console.log(error);
+  } finally {
+    await createActivityLog("Changed the calendar ID", "Events");
   }
 }
 
@@ -97,6 +100,8 @@ export async function createEvent(data: EventFormData) {
     revalidatePath("/osas/events");
   } catch (error) {
     console.error("Error creating event:", error);
+  } finally {
+    await createActivityLog("Created an Event", "Events");
   }
 }
 
@@ -159,6 +164,8 @@ export async function updateEvent(eventId: string, data: EventFormData) {
     revalidatePath("/osas/events");
   } catch (error) {
     console.error("Error updating event:", error);
+  } finally {
+    await createActivityLog("Updated an Event", "Events");
   }
 }
 
@@ -206,5 +213,7 @@ export async function getEventsWithDetails() {
   } catch (error) {
     console.error("Error fetching events from database:", error);
     return [];
+  } finally {
+    await createActivityLog("Deleted an Event", "Events");
   }
 }

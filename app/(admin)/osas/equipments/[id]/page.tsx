@@ -1,5 +1,7 @@
 import { getEquipment } from "@/actions/equipment.action";
 import { EquipmentForm } from "@/components/forms/EquipmentForm";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default async function EquipmentPage({ params }: { params: any }) {
   if (!params) return null;
@@ -20,6 +22,9 @@ export default async function EquipmentPage({ params }: { params: any }) {
 
   return (
     <main className=" bg-white p-8 rounded-md">
+      <Button asChild variant="link">
+        <Link href="/osas/equipments">Back</Link>
+      </Button>
       <EquipmentForm defaultValues={data} />
     </main>
   );

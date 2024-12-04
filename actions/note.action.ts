@@ -4,6 +4,7 @@ import { NoteFormData } from "@/components/forms/DisciplinaryNoteForm";
 import { createStudent } from "./student.action";
 import prisma from "@/lib/db";
 import { revalidatePath } from "next/cache";
+import { createActivityLog } from "./log.action";
 
 export async function createNote(data: NoteFormData) {
   try {
@@ -30,6 +31,8 @@ export async function createNote(data: NoteFormData) {
   } catch (error) {
     console.error("Error creating admission:", error);
     throw new Error("There was a problem creating the admission.");
+  } finally {
+    await createActivityLog("Created a Note", "Notes");
   }
 }
 
@@ -112,5 +115,7 @@ export async function updateNote(data: NoteFormData) {
   } catch (error) {
     console.error("Error updating admission:", error);
     throw new Error("There was a problem updating the admission.");
+  } finally {
+    await createActivityLog("Updated a Note", "Notes");
   }
 }

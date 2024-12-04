@@ -1,5 +1,7 @@
 import { getCertificateRequest } from "@/actions/certificate.action";
 import { Viewer } from "./PDF";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default async function RequestPage({
   params,
@@ -11,5 +13,12 @@ export default async function RequestPage({
   const request = await getCertificateRequest(params.id);
   if (!request) return <>Request not found</>;
 
-  return <Viewer request={request} />;
+  return (
+    <>
+      <Button asChild variant="link">
+        <Link href="/osas/certificates">Back</Link>
+      </Button>
+      <Viewer request={request} />;
+    </>
+  );
 }

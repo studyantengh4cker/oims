@@ -2,6 +2,7 @@
 
 import prisma from "@/lib/db";
 import { revalidatePath } from "next/cache";
+import { createActivityLog } from "./log.action";
 
 export async function createCertificate(data: any) {
   try {
@@ -9,6 +10,8 @@ export async function createCertificate(data: any) {
     revalidatePath("/osas/certificates");
   } catch (error) {
     console.log(error);
+  } finally {
+    await createActivityLog("Created a certificate request", "Certificates");
   }
 }
 
@@ -26,5 +29,23 @@ export async function getCertificateRequest(id: string) {
     return await prisma.certificateRequest.findUnique({ where: { id } });
   } catch (error) {
     console.log(error);
+  }
+}
+
+export async function updateRequestStatus(id: string, status: string) {
+  try {
+    await prisma.certificateRequest.update({
+      where: { id },
+      data: {
+        status,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+  } finally {
+    await createActivityLog(
+      "Updated a Certificate Request status",
+      "Certificates"
+    );
   }
 }

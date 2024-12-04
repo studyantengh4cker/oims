@@ -5,7 +5,7 @@ import { PDFViewer } from "@react-pdf/renderer";
 import { useEffect, useState } from "react";
 import GoodMoral from "../GoodMoral";
 import LeadershipCertificate from "../Leadership";
-import Loading from "@/app/loading";
+import Loading from "@/components/Loading";
 
 export function Viewer({ request }: { request: CertificateRequest }) {
   const [isClient, setIsClient] = useState(false);

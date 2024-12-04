@@ -1,6 +1,8 @@
+import { Button } from "@/components/ui/button";
 import { departments } from "@/lib/globals";
 import { SchoolEvent } from "@prisma/client";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function EventCollegeData({
   events,
@@ -43,6 +45,11 @@ export default function EventCollegeData({
           <h1>Total Incomplete</h1>
           <h1 className="text-lg font-bold">{totalIncompleteEvents}</h1>
         </div>
+        <Button asChild variant="link">
+          <Link href="/reports/events" className="text-primary-foreground">
+            View Report
+          </Link>
+        </Button>
       </div>
 
       {/* Events by Department */}

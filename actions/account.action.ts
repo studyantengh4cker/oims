@@ -2,6 +2,7 @@
 
 import prisma from "@/lib/db";
 import { revalidatePath } from "next/cache";
+import { createActivityLog } from "./log.action";
 
 // Create a new account
 export const createAccount = async (
@@ -21,6 +22,8 @@ export const createAccount = async (
   } catch (error) {
     console.log(error);
     throw new Error("Failed Creating Account");
+  } finally {
+    await createActivityLog("Created an Account", "Accounts");
   }
 };
 
@@ -74,6 +77,8 @@ export const updateAccount = async (
   } catch (error) {
     console.log(error);
     throw new Error("Failed Updating Account");
+  } finally {
+    await createActivityLog("Updated an Account", "Accounts");
   }
 };
 
@@ -89,5 +94,7 @@ export const deleteAccount = async (id: string) => {
   } catch (error) {
     console.log(error);
     throw new Error("Failed Deleting Account");
+  } finally {
+    await createActivityLog("Deleted an Account", "Accounts");
   }
 };

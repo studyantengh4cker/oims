@@ -4,6 +4,7 @@ import { AdmissionFormData } from "@/components/forms/AdmissionForm";
 import prisma from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { createStudent, updateStudent } from "./student.action";
+import { createActivityLog } from "./log.action";
 
 // Function to create admission with already existing student record
 export async function createAdmission(data: AdmissionFormData) {
@@ -37,6 +38,8 @@ export async function createAdmission(data: AdmissionFormData) {
   } catch (error) {
     console.error("Error creating admission:", error);
     throw new Error("There was a problem creating the admission.");
+  } finally {
+    await createActivityLog("Created an Admission", "Admission");
   }
 }
 
@@ -74,6 +77,8 @@ export async function updateAdmission(data: AdmissionFormData) {
   } catch (error) {
     console.error("Error updating admission:", error);
     throw new Error("There was a problem updating the admission.");
+  } finally {
+    await createActivityLog("Updated an Admission", "Admission");
   }
 }
 

@@ -7,6 +7,7 @@ import {
   HardHatIcon,
   Paperclip,
   Pin,
+  BookDashed,
 } from "lucide-react"; // Ensure you import all icons
 
 export const osasLinks = [
@@ -16,6 +17,7 @@ export const osasLinks = [
   { tag: "Equipments", href: "/osas/equipments", icon: <BaggageClaimIcon /> },
   { tag: "Certificates", href: "/osas/certificates", icon: <Paperclip /> },
   { tag: "Disciplinary Notes", href: "/osas/notes", icon: <Pin /> },
+  { tag: "Logs", href: "/osas/logs", icon: <BookDashed /> },
 ];
 
 export const guidanceLinks = [
@@ -23,6 +25,7 @@ export const guidanceLinks = [
   { tag: "Admission", href: "/guidance/admission", icon: <BookIcon /> },
   { tag: "Disciplinary Notes", href: "/guidance/notes", icon: <Pin /> },
   { tag: "Career", href: "/guidance/career", icon: <HardHatIcon /> },
+  { tag: "Logs", href: "/guidance/logs", icon: <BookDashed /> },
 ];
 
 export interface Admission {

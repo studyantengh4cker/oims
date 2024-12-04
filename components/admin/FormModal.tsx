@@ -19,7 +19,7 @@ export function FormModal({
       <DialogTrigger asChild>
         <Button>{title}</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>

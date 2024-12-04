@@ -12,32 +12,28 @@ import {
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "../ui/select";
-import Link from "next/link";
-import StatusSelect from "./StatusSelect";
 
-const certificateTypes = ["All", "Good Moral", "Leadership"];
-const statuses = ["All", "Pending", "Approved", "Declined"];
+const roles = ["All", "ADMIN", "USER", "GUEST"];
+const offices = ["All", "GUIDANCE", "REGISTRAR", "FINANCE"];
 
-export function CertificateRequestTable({ data }: { data: any[] }) {
+export function LogsTable({ data }: { data: any[] }) {
   const [searchTerm, setSearchTerm] = useState("");
-  const [filterCertificateType, setFilterCertificateType] = useState("");
-  const [filterStatus, setFilterStatus] = useState("");
+  const [filterRole, setFilterRole] = useState("");
+  const [filterOffice, setFilterOffice] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 5;
 
-  // Filter data based on search term, certificate type, and status
+  // Filter data based on search term, role, and office
   const filteredData = data
-    .filter((request) =>
-      request.studentId.toLowerCase().includes(searchTerm.toLowerCase())
+    .filter((log) =>
+      log.userName.toLowerCase().includes(searchTerm.toLowerCase())
     )
-    .filter((request) =>
-      filterCertificateType && filterCertificateType !== "All"
-        ? request.certificateType === filterCertificateType
-        : true
+    .filter((log) =>
+      filterRole && filterRole !== "All" ? log.role === filterRole : true
     )
-    .filter((request) =>
-      filterStatus && filterStatus !== "All"
-        ? request.status === filterStatus
+    .filter((log) =>
+      filterOffice && filterOffice !== "All"
+        ? log.office === filterOffice
         : true
     );
 
@@ -53,13 +49,13 @@ export function CertificateRequestTable({ data }: { data: any[] }) {
     setCurrentPage(1); // Reset to first page on search
   };
 
-  const handleCertificateTypeChange = (value: string) => {
-    setFilterCertificateType(value === "All" ? "" : value);
+  const handleRoleChange = (value: string) => {
+    setFilterRole(value === "All" ? "" : value);
     setCurrentPage(1); // Reset to first page on filter change
   };
 
-  const handleStatusChange = (value: string) => {
-    setFilterStatus(value === "All" ? "" : value);
+  const handleOfficeChange = (value: string) => {
+    setFilterOffice(value === "All" ? "" : value);
     setCurrentPage(1); // Reset to first page on filter change
   };
 
@@ -73,31 +69,31 @@ export function CertificateRequestTable({ data }: { data: any[] }) {
       <div className="flex justify-between gap-2 mb-4">
         <Input
           type="text"
-          placeholder="Search by Student ID..."
+          placeholder="Search by User Name..."
           value={searchTerm}
           onChange={handleSearchChange}
           className="w-1/3"
         />
-        <Select onValueChange={handleCertificateTypeChange}>
+        <Select onValueChange={handleRoleChange}>
           <SelectTrigger className="w-1/3">
-            <span>{filterCertificateType || "Filter by Certificate Type"}</span>
+            <span>{filterRole || "Filter by Role"}</span>
           </SelectTrigger>
           <SelectContent>
-            {certificateTypes.map((type) => (
-              <SelectItem key={type} value={type}>
-                {type}
+            {roles.map((role) => (
+              <SelectItem key={role} value={role}>
+                {role}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
-        <Select onValueChange={handleStatusChange}>
+        <Select onValueChange={handleOfficeChange}>
           <SelectTrigger className="w-1/3">
-            <span>{filterStatus || "Filter by Status"}</span>
+            <span>{filterOffice || "Filter by Office"}</span>
           </SelectTrigger>
           <SelectContent>
-            {statuses.map((status) => (
-              <SelectItem key={status} value={status}>
-                {status}
+            {offices.map((office) => (
+              <SelectItem key={office} value={office}>
+                {office}
               </SelectItem>
             ))}
           </SelectContent>
@@ -108,39 +104,39 @@ export function CertificateRequestTable({ data }: { data: any[] }) {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Certificate Type</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Name</TableHead>
-            <TableHead>Student ID</TableHead>
-            <TableHead>Date Created</TableHead>
+            <TableHead>System</TableHead>
+            <TableHead>User</TableHead>
             <TableHead>Action</TableHead>
+            <TableHead>Timestamp</TableHead>
+            <TableHead>IP Address</TableHead>
+            <TableHead>Device Info</TableHead>
+            <TableHead>Role</TableHead>
+            <TableHead>Office</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {paginatedData.length > 0 ? (
-            paginatedData.map((request) => (
-              <TableRow key={request.id}>
-                <TableCell>{request.certificateType}</TableCell>
+            paginatedData.map((log) => (
+              <TableRow key={log.id}>
+                <TableCell>{log.system}</TableCell>
+                <TableCell>{log.userName}</TableCell>
+                <TableCell>{log.action}</TableCell>
                 <TableCell>
-                  <StatusSelect
-                    id={request.id}
-                    currentStatus={request.status}
-                  />
+                  {new Date(log.timestamp).toLocaleString()}
                 </TableCell>
-                <TableCell>{request.name}</TableCell>
-                <TableCell>{request.studentId}</TableCell>
+                <TableCell>{log.ipAddress}</TableCell>
                 <TableCell>
-                  {new Date(request.dateCreated).toLocaleDateString()}
+                  {log.deviceInfo.deviceType}, {log.deviceInfo.browser},{" "}
+                  {log.deviceInfo.os}
                 </TableCell>
-                <TableCell>
-                  <Link href={`certificates/${request.id}`}>View</Link>
-                </TableCell>
+                <TableCell>{log.role}</TableCell>
+                <TableCell>{log.office}</TableCell>
               </TableRow>
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={5} className="text-center">
-                No certificate requests found.
+              <TableCell colSpan={7} className="text-center">
+                No logs found.
               </TableCell>
             </TableRow>
           )}

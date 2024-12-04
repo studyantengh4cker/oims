@@ -2,6 +2,7 @@
 
 import prisma from "@/lib/db";
 import { Student } from "@prisma/client";
+import { revalidatePath } from "next/cache";
 
 // Create a student record
 export async function createStudent(
@@ -44,6 +45,7 @@ export async function createStudent(
         classification,
       },
     });
+    revalidatePath("/");
     return student; // Return the created or updated student
   } catch (error) {
     console.error("Error creating or updating student:", error);
@@ -118,5 +120,18 @@ export async function getGraduatingStudents(
   } catch (error) {
     console.error("Error fetching graduating students:", error);
     return null;
+  }
+}
+
+export async function getStudentsByProgram(
+  program: string,
+  classification: string
+) {
+  try {
+    return await prisma.student.findMany({
+      where: { program, classification },
+    });
+  } catch (error) {
+    console.log(error);
   }
 }

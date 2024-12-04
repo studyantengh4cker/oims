@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import { Events } from "./Events";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import Loading from "@/app/loading";
+import Loading from "@/components/Loading";
 
 export default async function EventsPage() {
   const calendarID = await getCalendarID();
@@ -12,10 +12,12 @@ export default async function EventsPage() {
     <main className="p-10 space-y-10">
       {calendarID && (
         <Suspense fallback={<Loading />}>
-          <Button asChild>
-            <Link href="/osas/events/create">Create Event</Link>
-          </Button>
-          <h1 className="text-2xl font-bold text-primary">Events</h1>
+          <div className="flex gap-4 items-center">
+            <Button asChild>
+              <Link href="/osas/events/create">Create Event</Link>
+            </Button>
+            <h1 className="text-2xl font-bold text-primary">Events</h1>
+          </div>
           <Events calendarID={calendarID} />
         </Suspense>
       )}

@@ -1,5 +1,6 @@
 import { getOpportunity } from "@/actions/opportunity.action";
 import { OpportunityForm } from "@/components/forms/OpportunityForm";
+import ProgramStudents from "./ProgramStudents";
 
 export default async function OpportunityPage({ params }: { params: any }) {
   if (!params) return null;
@@ -7,17 +8,9 @@ export default async function OpportunityPage({ params }: { params: any }) {
   const opportunity = await getOpportunity(params.id as string);
   if (!opportunity) return <>Not Found</>;
 
-  console.log(opportunity);
-
   return (
     <main className="h-screen space-y-8">
-      <section className="flex">
-        <div className="bg-orange-600 text-white p-8 rounded-md drop-shadow-md">
-          <p className="text-sm">Student Notified</p>
-          <h1 className="text-2xl font-bold">30</h1>
-        </div>
-      </section>
-      <section>
+      <section className="p-5">
         <OpportunityForm
           defaultValues={{
             id: opportunity.id,
@@ -27,6 +20,10 @@ export default async function OpportunityPage({ params }: { params: any }) {
             program: opportunity.program,
           }}
         />
+      </section>
+      <section className="p-5">
+        <h1 className="text-lg font-bold mb-4">Students To Be Notified</h1>
+        <ProgramStudents program={opportunity.program} />
       </section>
     </main>
   );

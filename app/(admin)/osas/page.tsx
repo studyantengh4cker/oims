@@ -4,7 +4,7 @@ import { DataTable } from "@/components/admin/DataTable";
 import { AccountForm } from "@/components/forms/AccountForm";
 import { FormModal } from "@/components/admin/FormModal";
 import { Suspense } from "react";
-import Loading from "@/app/loading";
+import Loading from "@/components/Loading";
 
 export default function OsasPage() {
   return (

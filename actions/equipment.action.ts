@@ -4,6 +4,7 @@ import { EquipmentFormData } from "@/components/forms/EquipmentForm";
 import { RequestEquipmentsFormData } from "@/components/forms/EquipmentRequestForm";
 import prisma from "@/lib/db";
 import { revalidatePath } from "next/cache";
+import { createActivityLog } from "./log.action";
 
 export async function getEquipments() {
   try {
@@ -69,6 +70,8 @@ export async function deleteEquipment(id: string) {
     await prisma.equipment.delete({ where: { id } });
   } catch (error) {
     console.log(error);
+  } finally {
+    await createActivityLog("Deleted an Equipment", "Equipments");
   }
 }
 
@@ -99,6 +102,8 @@ export async function updateEquipment(data: EquipmentFormData) {
     });
   } catch (e) {
     console.log(e);
+  } finally {
+    await createActivityLog("Updated an Equipment", "Equipments");
   }
 }
 
@@ -117,6 +122,8 @@ export async function createEquipment(data: EquipmentFormData) {
     });
   } catch (e) {
     console.log(e);
+  } finally {
+    await createActivityLog("Created an Equipment", "Equipments");
   }
 }
 
@@ -164,6 +171,8 @@ export async function createEquipmentRequest(data: RequestEquipmentsFormData) {
   } catch (error) {
     console.error("Error creating equipment request:", error);
     throw new Error("Failed to create equipment request");
+  } finally {
+    await createActivityLog("Created a Equipment Request", "Equipments");
   }
 }
 
@@ -200,6 +209,8 @@ export async function updateEquipmentRequest(
   } catch (error) {
     console.error("Error updating equipment request:", error);
     throw new Error("Failed to update equipment request");
+  } finally {
+    await createActivityLog("Updated a Equipment Request", "Equipments");
   }
 }
 
