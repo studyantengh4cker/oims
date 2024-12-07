@@ -245,3 +245,30 @@ export async function getRequestedEquipment(id: string) {
     throw new Error("Failed to fetch requested equipment");
   }
 }
+
+export async function getAllBorrowHistory() {
+  try {
+    return await prisma.requestedEquipment.findMany({
+      include: {
+        equipment: {
+          select: {
+            name: true, // Equipment Name
+          },
+        },
+        request: {
+          select: {
+            dateRequested: true, // Borrowed Date
+            status: true, // Request status (RequestedEquipment status)
+            requestor: true, // Borrower (add a `borrower` field to EquipmentRequest if not present)
+            event: {
+              select: {
+                id: true,
+                summary: true, // Event summary
+              },
+            },
+          },
+        },
+      },
+    });
+  } catch (error) {}
+}

@@ -22,6 +22,7 @@ export function Viewer({ request }: { request: CertificateRequest }) {
         <GoodMoral
           studentName={request.name}
           osasDean={request.osasDean}
+          cocDean={request.cocDean}
           controlNumber={request.controlNumber}
           selectedPurpose={request.purpose as string}
         />

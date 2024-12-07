@@ -126,6 +126,7 @@ export function EventsTable({ data }: { data: any[] }) {
             <TableHead>Summary</TableHead>
             <TableHead>Location</TableHead>
             <TableHead>Status</TableHead>
+            <TableHead>Requirements</TableHead>
             <TableHead>Start Date</TableHead>
             <TableHead>End Date</TableHead>
             <TableHead>Action</TableHead>
@@ -146,6 +147,13 @@ export function EventsTable({ data }: { data: any[] }) {
                 </TableCell>
                 <TableCell>{event.location}</TableCell>
                 <TableCell>{event.status}</TableCell>
+                <TableCell>
+                  {event.hasEvaluationReport &&
+                  event.hasPostActivityRequirements
+                    ? "Complete"
+                    : "Incomplete"}
+                </TableCell>
+
                 <TableCell>
                   {new Date(event.start).toLocaleDateString()}
                 </TableCell>

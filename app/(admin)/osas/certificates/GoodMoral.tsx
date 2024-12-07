@@ -39,11 +39,13 @@ const styles = StyleSheet.create({
 export default function GoodMoral({
   studentName,
   osasDean,
+  cocDean,
   selectedPurpose,
   controlNumber,
 }: {
   studentName: string;
   osasDean: string;
+  cocDean: string | null;
   selectedPurpose: string;
   controlNumber: string;
 }) {
@@ -76,6 +78,12 @@ export default function GoodMoral({
           <Text>{osasDean.toUpperCase()}</Text>
           <Text>Dean of Student Affairs and Services</Text>
         </View>
+        {cocDean && (
+          <View style={styles.text}>
+            <Text>{cocDean.toUpperCase()}</Text>
+            <Text>Dean, College of Criminology</Text>
+          </View>
+        )}
         <Text style={styles.note}>NOT VALID WITHOUT THE SCHOOL SEAL</Text>
         <Text style={styles.controlNumber}>
           Control Number: DSA FORM M-{controlNumber}

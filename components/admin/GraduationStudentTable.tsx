@@ -13,7 +13,6 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "../ui/select";
 import { StatusBadge } from "../StatusBadge";
-import Link from "next/link";
 
 const statuses = ["All", "Graduate", "Undergraduate"];
 
@@ -106,7 +105,6 @@ export function GraduatingStudentTable({ data }: { data: any[] | null }) {
             <TableHead>Status</TableHead>
             <TableHead>Email</TableHead>
             <TableHead>Contact</TableHead>
-            <TableHead>Action</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -122,11 +120,6 @@ export function GraduatingStudentTable({ data }: { data: any[] | null }) {
                 </TableCell>
                 <TableCell>{student.email}</TableCell>
                 <TableCell>{student.contactNumber}</TableCell>
-                <TableCell className="flex items-center gap-4">
-                  <Button>
-                    <Link href={`students/${student.studentId}`}>View</Link>
-                  </Button>
-                </TableCell>
               </TableRow>
             ))
           ) : (

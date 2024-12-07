@@ -4,7 +4,7 @@ export function Topnav() {
   return (
     <nav className="sticky top-0 flex px-6 py-4 items-center text-white bg-red-950 justify-between z-50">
       <Link href="/" className="flex items-center gap-4 flex-1">
-        <img src="/logo.png" alt="logo" className="w-10 animate-spin" />
+        <img src="/logo.png" alt="logo" className="w-10" />
         <h1 className="font-bold">OIMS</h1>
       </Link>
       <div className="md:flex items-center gap-12 flex-1 justify-center hidden">

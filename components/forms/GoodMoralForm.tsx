@@ -31,13 +31,16 @@ import {
 } from "../ui/select";
 import { Button } from "../ui/button";
 import { createCertificate } from "@/actions/certificate.action";
+import { departments } from "@/lib/globals";
 
 export default function CertificateForm() {
   const [studentId, setStudentId] = useState("");
   const [studentName, setStudentName] = useState("");
   const [osasDean, setOsasDean] = useState("DIANNE THERESE MARIE C. BAHALA");
+  const [cocDean, setCOCDean] = useState("CHARLYN S. JANOG, Phd Crim");
   const [selectedPurpose, setSelectedPurpose] = useState("Others");
   const [controlNumber, setControlNumber] = useState("123");
+  const [selectedCollege, setSelectedCollege] = useState(""); // Track selected college
 
   const [hasViolation, setHasViolation] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -51,6 +54,7 @@ export default function CertificateForm() {
       name: studentName,
       purpose: selectedPurpose,
       osasDean,
+      cocDean: selectedCollege === "College of Criminology" ? cocDean : null,
       controlNumber,
     });
   };
@@ -114,6 +118,25 @@ export default function CertificateForm() {
         />
       </div>
       <div>
+        <Label htmlFor="college">College</Label>
+        <Select
+          name="college"
+          value={selectedCollege}
+          onValueChange={(value) => setSelectedCollege(value)}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Select College" />
+          </SelectTrigger>
+          <SelectContent>
+            {departments.map((course) => (
+              <SelectItem key={course.name} value={course.name}>
+                {course.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+      <div>
         <Label htmlFor="osasDean">OSAS Dean</Label>
         <Input
           placeholder="OSAS Dean"
@@ -123,6 +146,18 @@ export default function CertificateForm() {
           onChange={(e) => setOsasDean(e.target.value)}
         />
       </div>
+      {selectedCollege === "College of Criminology" && (
+        <div>
+          <Label htmlFor="cocDean">COC Dean</Label>
+          <Input
+            placeholder="COC Dean"
+            name="cocDean"
+            id="cocDean"
+            value={cocDean}
+            onChange={(e) => setCOCDean(e.target.value)}
+          />
+        </div>
+      )}
       <div>
         <Label htmlFor="purpose">Purpose</Label>
         <Select

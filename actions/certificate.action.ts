@@ -40,6 +40,7 @@ export async function updateRequestStatus(id: string, status: string) {
         status,
       },
     });
+    revalidatePath("/osas/certificates");
   } catch (error) {
     console.log(error);
   } finally {

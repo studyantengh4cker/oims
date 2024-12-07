@@ -135,6 +135,7 @@ model CertificateRequest {
   organization    String?
   controlNumber   String
   osasDean        String
+  cocDean         String?
   certificateType String
   status          String
   dateCreated     DateTime @default(now())

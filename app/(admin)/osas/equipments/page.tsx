@@ -2,6 +2,7 @@ import { getEquipments } from "@/actions/equipment.action";
 import { EquipmentsTable } from "@/components/admin/EquipmentsTable";
 import { FormModal } from "@/components/admin/FormModal";
 import { EquipmentForm } from "@/components/forms/EquipmentForm";
+import { EquipmentHistory } from "./EquipmentHistory";
 
 export default async function EquipmentsPage() {
   const equipments = await getEquipments();
@@ -14,6 +15,7 @@ export default async function EquipmentsPage() {
         <h1 className="text-2xl text-primary font-bold">Equipments</h1>
       </div>
       <EquipmentsTable data={equipments} />
+      <EquipmentHistory />
     </main>
   );
 }

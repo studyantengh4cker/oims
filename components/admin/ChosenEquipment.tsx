@@ -77,6 +77,7 @@ const ChosenEquipment = ({
             </SelectTrigger>
           </FormControl>
           <SelectContent>
+            <SelectItem value="Replaced">Replaced</SelectItem>
             <SelectItem value="Not Returned">Not Returned</SelectItem>
             <SelectItem value="Returned">Returned</SelectItem>
           </SelectContent>

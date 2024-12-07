@@ -21,7 +21,7 @@ export function LogsTable({ data }: { data: any[] }) {
   const [filterRole, setFilterRole] = useState("");
   const [filterOffice, setFilterOffice] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const rowsPerPage = 5;
+  const rowsPerPage = 15;
 
   // Filter data based on search term, role, and office
   const filteredData = data

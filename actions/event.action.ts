@@ -189,6 +189,8 @@ export async function deleteEvent(eventId: string) {
     revalidatePath("/osas/events");
   } catch (error) {
     console.error("Error deleting event:", error);
+  } finally {
+    await createActivityLog("Deleted an Event", "Events");
   }
 }
 
@@ -213,7 +215,5 @@ export async function getEventsWithDetails() {
   } catch (error) {
     console.error("Error fetching events from database:", error);
     return [];
-  } finally {
-    await createActivityLog("Deleted an Event", "Events");
   }
 }

@@ -33,7 +33,7 @@ export function Logs({ office }: { office: string }) {
 
     // Cleanup listener on unmount
     return () => unsubscribe();
-  }, []);
+  }, [office]);
 
   return <LogsTable data={logs} />;
 }
