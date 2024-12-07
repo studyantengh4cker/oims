@@ -1,10 +1,31 @@
-import { Page, Text, View, Document, StyleSheet } from "@react-pdf/renderer";
+import {
+  Page,
+  Text,
+  View,
+  Document,
+  StyleSheet,
+  Image,
+} from "@react-pdf/renderer";
 
 const styles = StyleSheet.create({
   page: {
     padding: 30,
     fontSize: 12,
     lineHeight: 1.5,
+  },
+  logo: {
+    width: 50,
+    height: 50,
+    marginRight: 10,
+  },
+  top: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 20,
+    borderBottom: "2px",
+    borderBottomColor: "red",
   },
   header: {
     textAlign: "center",
@@ -58,6 +79,27 @@ export default function LeadershipCertificate({
   return (
     <Document>
       <Page size="A4" style={styles.page}>
+        <View style={styles.top}>
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <Image style={styles.logo} src="/logo.png" />
+            <View>
+              <Text>St. Peter&apos;s College</Text>
+
+              <Text>Sabayle St., Iligan City</Text>
+            </View>
+          </View>
+          <View>
+            <Text>OFFICE OF STUDENT AFFAIRS & SERVICES</Text>
+            <Text>E-mail: spcosa@spc.edu.ph</Text>
+            <Text>Facebook: www.facebook.com/SPCIOSA</Text>
+          </View>
+        </View>
         <View style={styles.header}>
           <Text>CERTIFICATION</Text>
         </View>

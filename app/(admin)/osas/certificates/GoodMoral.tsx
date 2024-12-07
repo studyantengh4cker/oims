@@ -1,4 +1,11 @@
-import { Page, Text, View, Document, StyleSheet } from "@react-pdf/renderer";
+import {
+  Page,
+  Text,
+  View,
+  Document,
+  StyleSheet,
+  Image,
+} from "@react-pdf/renderer";
 
 const styles = StyleSheet.create({
   page: {
@@ -6,9 +13,29 @@ const styles = StyleSheet.create({
     fontSize: 12,
     lineHeight: 1.5,
   },
-  header: {
-    textAlign: "center",
+  top: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     marginBottom: 20,
+    borderBottom: "2px",
+    borderBottomColor: "red",
+  },
+  header: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 20,
+  },
+  logo: {
+    width: 50,
+    height: 50,
+    marginRight: 10,
+  },
+  headerText: {
+    fontSize: 12,
   },
   title: {
     marginVertical: 10,
@@ -52,6 +79,29 @@ export default function GoodMoral({
   return (
     <Document>
       <Page size="A4" style={styles.page}>
+        {/* Header with Logo and Text */}
+        <View style={styles.top}>
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <Image style={styles.logo} src="/logo.png" />
+            <View>
+              <Text style={styles.headerText}>St. Peter&apos;s College</Text>
+              <Text style={styles.headerText}>Sabayle St., Iligan City</Text>
+            </View>
+          </View>
+          <View>
+            <Text>OFFICE OF STUDENT AFFAIRS & SERVICES</Text>
+            <Text>E-mail: spcosa@spc.edu.ph</Text>
+            <Text>Facebook: www.facebook.com/SPCIOSA</Text>
+          </View>
+        </View>
+
+        {/* Content of the Certificate */}
         <View style={styles.header}>
           <Text>NOVEMBER 29, 2023</Text>
           <Text>TO WHOM IT MAY CONCERN:</Text>
