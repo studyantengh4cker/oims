@@ -37,14 +37,17 @@ const colleges: { [key: string]: string } = {
   "11": "SPC",
 };
 
+const eventTypes = ["All", "Non-Curricular", "Curricular", "Co-Curricular"];
+
 export function EventsTable({ data }: { data: any[] }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
   const [filterCollege, setFilterCollege] = useState("");
+  const [filterType, setFilterType] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 5;
 
-  // Filter data based on search term, selected status, and college
+  // Filter data based on search term, selected status, college, and event type
   const filteredData = data
     .filter((event) => {
       return event.summary.toLowerCase().includes(searchTerm.toLowerCase());
@@ -56,6 +59,11 @@ export function EventsTable({ data }: { data: any[] }) {
     })
     .filter((event) => {
       return filterCollege ? event.colorId === filterCollege : true;
+    })
+    .filter((event) => {
+      return filterType && filterType !== "All"
+        ? event.eventType === filterType
+        : true;
     });
 
   // Calculate pagination data
@@ -77,6 +85,11 @@ export function EventsTable({ data }: { data: any[] }) {
 
   const handleCollegeFilterChange = (value: string) => {
     setFilterCollege(value); // Update college filter
+    setCurrentPage(1); // Reset to first page on filter change
+  };
+
+  const handleTypeFilterChange = (value: string) => {
+    setFilterType(value); // Update event type filter
     setCurrentPage(1); // Reset to first page on filter change
   };
 
@@ -119,6 +132,19 @@ export function EventsTable({ data }: { data: any[] }) {
             ))}
           </SelectContent>
         </Select>
+        {/* Event Type Filter */}
+        <Select onValueChange={handleTypeFilterChange}>
+          <SelectTrigger className="w-1/4">
+            <span>{filterType || "Filter by type"}</span>
+          </SelectTrigger>
+          <SelectContent>
+            {eventTypes.map((type) => (
+              <SelectItem key={type} value={type}>
+                {type}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
       <Table>
         <TableHeader>
@@ -126,6 +152,7 @@ export function EventsTable({ data }: { data: any[] }) {
             <TableHead>Summary</TableHead>
             <TableHead>Location</TableHead>
             <TableHead>Status</TableHead>
+            <TableHead>Type</TableHead> {/* New column for Event Type */}
             <TableHead>Requirements</TableHead>
             <TableHead>Start Date</TableHead>
             <TableHead>End Date</TableHead>
@@ -147,13 +174,13 @@ export function EventsTable({ data }: { data: any[] }) {
                 </TableCell>
                 <TableCell>{event.location}</TableCell>
                 <TableCell>{event.status}</TableCell>
+                <TableCell>{event.eventType}</TableCell> {/* Event Type */}
                 <TableCell>
                   {event.hasEvaluationReport &&
                   event.hasPostActivityRequirements
                     ? "Complete"
                     : "Incomplete"}
                 </TableCell>
-
                 <TableCell>
                   {new Date(event.start).toLocaleDateString()}
                 </TableCell>

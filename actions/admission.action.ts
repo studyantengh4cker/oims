@@ -109,3 +109,16 @@ export async function getAdmissionByNumber(number: string) {
     console.error(error);
   }
 }
+
+export async function getAllAdmission() {
+  try {
+    return await prisma.admission.findMany({
+      include: {
+        requirements: true,
+        student: true,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+  }
+}

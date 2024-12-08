@@ -160,7 +160,14 @@ const EventSummaryReport = ({ events }: { events: any[] }) => {
           ))}
         </View>
 
-        {incompleteEvents.length > 0 && (
+        {/* Footer */}
+        <View style={styles.footer}>
+          <Text>&copy; 2024 School Event Management</Text>
+        </View>
+      </Page>
+
+      {incompleteEvents.length > 0 && (
+        <Page>
           <View style={styles.incompleteTable}>
             <Text style={[styles.tableHeader, { textAlign: "center" }]}>
               Events with Incomplete Requirements
@@ -184,13 +191,12 @@ const EventSummaryReport = ({ events }: { events: any[] }) => {
                 )
             )}
           </View>
-        )}
-
-        {/* Footer */}
-        <View style={styles.footer}>
-          <Text>&copy; 2024 School Event Management</Text>
-        </View>
-      </Page>
+          {/* Footer */}
+          <View style={styles.footer}>
+            <Text>&copy; 2024 School Event Management</Text>
+          </View>
+        </Page>
+      )}
     </Document>
   );
 };

@@ -1,76 +1,104 @@
 import React from "react";
 import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
 
-// Create styles for the document
+// Create professional styles for the document
 const styles = StyleSheet.create({
   page: {
-    padding: 30,
+    padding: 40,
     fontFamily: "Helvetica",
+    fontSize: 11,
+    lineHeight: 1.6,
+    color: "#333",
   },
   header: {
     textAlign: "center",
-    marginBottom: 20,
+    marginBottom: 30,
   },
   title: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: "bold",
+    marginBottom: 5,
+    color: "#2c3e50",
   },
-  section: {
+  subtitle: {
+    fontSize: 12,
+    color: "#7f8c8d",
+  },
+  filterSummary: {
     marginBottom: 20,
+    padding: 10,
+    backgroundColor: "#ecf0f1",
+    borderRadius: 5,
+    textAlign: "left",
+    fontSize: 10,
+    fontStyle: "italic",
+    color: "#34495e",
+  },
+  sectionTitle: {
+    fontSize: 14,
+    fontWeight: "bold",
+    marginBottom: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#bdc3c7",
+    paddingBottom: 5,
+    color: "#2c3e50",
   },
   table: {
+    marginTop: 10,
     width: "100%",
-    marginBottom: 10,
-    display: "flex",
-    flexDirection: "column",
-  },
-  tableRow: {
-    display: "flex",
-    flexDirection: "row",
-    padding: 8,
+    borderWidth: 1,
+    borderColor: "#bdc3c7",
+    borderRadius: 5,
+    overflow: "hidden",
   },
   tableHeader: {
-    backgroundColor: "#f0f0f0",
+    flexDirection: "row",
+    backgroundColor: "#800000",
+    color: "#ecf0f1",
+    padding: 10,
     fontWeight: "bold",
+  },
+  tableRow: {
+    flexDirection: "row",
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ecf0f1",
   },
   tableCell: {
     flex: 1,
-    borderWidth: 1,
-    borderColor: "#e0e0e0",
-    padding: 8,
-    fontSize: 10,
+    paddingHorizontal: 5,
   },
   footer: {
+    marginTop: 40,
     textAlign: "center",
     fontSize: 10,
-    color: "#888",
-    marginTop: 30,
-  },
-  summary: {
-    textAlign: "center",
-    marginBottom: 10,
-    fontSize: 12,
+    color: "#7f8c8d",
   },
 });
 
 // AdmissionSummaryReport Component
 const AdmissionSummaryReport = ({
   admissionData,
+  filters,
 }: {
   admissionData: any[];
+  filters: {
+    status: string;
+    admissionType: string;
+    college: string;
+    program: string;
+  };
 }) => {
-  // Count the number of 'Complete' and 'Incomplete' admissions
-  const statusCounts = admissionData.reduce(
-    (acc, admission) => {
-      if (admission.status === "Complete") {
-        acc.complete += 1;
-      } else if (admission.status === "Incomplete") {
-        acc.incomplete += 1;
-      }
-      return acc;
-    },
-    { complete: 0, incomplete: 0 }
-  );
+  // Format filter settings
+  const formattedFilters = {
+    status: filters.status === "All" ? "all statuses" : filters.status,
+    admissionType:
+      filters.admissionType === "All"
+        ? "all admission types"
+        : filters.admissionType,
+    college: filters.college === "All" ? "all colleges" : filters.college,
+    program: filters.program === "All" ? "all programs" : filters.program,
+  };
 
   return (
     <Document>
@@ -78,40 +106,52 @@ const AdmissionSummaryReport = ({
         {/* Header Section */}
         <View style={styles.header}>
           <Text style={styles.title}>Admission Summary Report</Text>
-          <Text>Summary of student admissions for the 2024 academic year</Text>
+          <Text style={styles.subtitle}>Academic Year 2024</Text>
         </View>
 
-        {/* Summary Section */}
-        <View style={styles.summary}>
-          <Text>Complete Admissions: {statusCounts.complete}</Text>
-          <Text>Incomplete Admissions: {statusCounts.incomplete}</Text>
+        {/* Filter Summary */}
+        <View style={styles.filterSummary}>
+          <Text>
+            This report includes admissions {formattedFilters.status},
+            {formattedFilters.admissionType}, {formattedFilters.college}, and{" "}
+            {formattedFilters.program}.
+          </Text>
         </View>
 
         {/* Table Section */}
-        <View style={styles.section}>
+        <View>
+          <Text style={styles.sectionTitle}>Detailed Admissions</Text>
           <View style={styles.table}>
             {/* Table Header */}
-            <View style={[styles.tableRow, styles.tableHeader]}>
-              <Text style={styles.tableCell}>Student ID</Text>
-              <Text style={styles.tableCell}>Name</Text>
-              <Text style={styles.tableCell}>Course</Text>
-              <Text style={styles.tableCell}>Admission Type</Text>
-              <Text style={styles.tableCell}>Status</Text>
-              <Text style={styles.tableCell}>Admission Date</Text>
+            <View style={styles.tableHeader}>
+              <Text style={[styles.tableCell, { flex: 1 }]}>Student ID</Text>
+              <Text style={[styles.tableCell, { flex: 2 }]}>Name</Text>
+              <Text style={[styles.tableCell, { flex: 1.5 }]}>Course</Text>
+              <Text style={[styles.tableCell, { flex: 1 }]}>Type</Text>
+              <Text style={[styles.tableCell, { flex: 1 }]}>Status</Text>
+              <Text style={[styles.tableCell, { flex: 1.5 }]}>Date</Text>
             </View>
 
             {/* Table Rows */}
             {admissionData.map((admission) => (
               <View style={styles.tableRow} key={admission.id}>
-                <Text style={styles.tableCell}>{admission.studentId}</Text>
-                <Text style={styles.tableCell}>
+                <Text style={[styles.tableCell, { flex: 1 }]}>
+                  {admission.studentId}
+                </Text>
+                <Text style={[styles.tableCell, { flex: 2 }]}>
                   {admission.student.firstName} {admission.student.middleName}{" "}
                   {admission.student.lastName}
                 </Text>
-                <Text style={styles.tableCell}>{admission.student.course}</Text>
-                <Text style={styles.tableCell}>{admission.admissionType}</Text>
-                <Text style={styles.tableCell}>{admission.status}</Text>
-                <Text style={styles.tableCell}>
+                <Text style={[styles.tableCell, { flex: 1.5 }]}>
+                  {admission.student.course}
+                </Text>
+                <Text style={[styles.tableCell, { flex: 1 }]}>
+                  {admission.admissionType}
+                </Text>
+                <Text style={[styles.tableCell, { flex: 1 }]}>
+                  {admission.status}
+                </Text>
+                <Text style={[styles.tableCell, { flex: 1.5 }]}>
                   {new Date(admission.createdAt).toLocaleDateString()}
                 </Text>
               </View>
@@ -121,7 +161,7 @@ const AdmissionSummaryReport = ({
 
         {/* Footer */}
         <View style={styles.footer}>
-          <Text>&copy; 2024 Admission Office</Text>
+          <Text>&copy; 2024 Admission Office. All rights reserved.</Text>
         </View>
       </Page>
     </Document>

@@ -1,5 +1,6 @@
 import { getStudentsByProgram } from "@/actions/student.action";
 import { GraduatingStudentTable } from "@/components/admin/GraduationStudentTable";
+import NotifyStudentsButton from "@/components/admin/NotifyStudentsButton";
 
 export default async function ProgramStudents({
   program,
@@ -8,5 +9,10 @@ export default async function ProgramStudents({
 }) {
   const students = (await getStudentsByProgram(program, "Graduate")) || [];
 
-  return <GraduatingStudentTable data={students} />;
+  return (
+    <section>
+      <NotifyStudentsButton />
+      <GraduatingStudentTable data={students} />;
+    </section>
+  );
 }
