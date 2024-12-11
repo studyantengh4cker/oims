@@ -1,7 +1,16 @@
 import React from "react";
-import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
+import {
+  Document,
+  Page,
+  Text,
+  View,
+  StyleSheet,
+  Image,
+} from "@react-pdf/renderer";
 
-// Create professional styles for the document
+import { departments } from "@/lib/globals";
+
+// Define professional styles for the report
 const styles = StyleSheet.create({
   page: {
     padding: 40,
@@ -14,6 +23,12 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 30,
   },
+  logo: {
+    width: 100,
+    height: 100,
+    marginBottom: 20,
+    alignSelf: "center",
+  },
   title: {
     fontSize: 20,
     fontWeight: "bold",
@@ -24,16 +39,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#7f8c8d",
   },
-  filterSummary: {
-    marginBottom: 20,
-    padding: 10,
-    backgroundColor: "#ecf0f1",
-    borderRadius: 5,
-    textAlign: "left",
-    fontSize: 10,
-    fontStyle: "italic",
-    color: "#34495e",
-  },
   sectionTitle: {
     fontSize: 14,
     fontWeight: "bold",
@@ -42,6 +47,11 @@ const styles = StyleSheet.create({
     borderBottomColor: "#bdc3c7",
     paddingBottom: 5,
     color: "#2c3e50",
+  },
+  text: {
+    marginBottom: 10,
+    fontSize: 10,
+    color: "#34495e",
   },
   table: {
     marginTop: 10,
@@ -87,83 +97,112 @@ const AdmissionSummaryReport = ({
     admissionType: string;
     college: string;
     program: string;
+    fromDate: string;
+    toDate: string;
   };
 }) => {
-  // Format filter settings
-  const formattedFilters = {
-    status: filters.status === "All" ? "all statuses" : filters.status,
-    admissionType:
-      filters.admissionType === "All"
-        ? "all admission types"
-        : filters.admissionType,
-    college: filters.college === "All" ? "all colleges" : filters.college,
-    program: filters.program === "All" ? "all programs" : filters.program,
-  };
+  // Calculate counts
+  const completeCount = admissionData.filter(
+    (ad) => ad.status === "Complete"
+  ).length;
+  const incompleteCount = admissionData.filter(
+    (ad) => ad.status === "Incomplete"
+  ).length;
+  const totalCount = admissionData.length;
+
+  // Determine displayed text based on filters
+  const admissionTypeText =
+    filters.college === "All"
+      ? "Admissions from All Colleges"
+      : `Admissions from ${filters.college}`;
+
+  const shouldRenderIncompletePage =
+    filters.status === "All" || filters.status === "Incomplete";
+
+  // Determine the logo to display based on the selected college
+  const collegeLogo =
+    filters.college === "All"
+      ? "/logo.png"
+      : departments.find((dept) => dept.name === filters.college)?.logo ||
+        "/logo.png";
 
   return (
     <Document>
+      {/* First Page */}
       <Page style={styles.page}>
-        {/* Header Section */}
         <View style={styles.header}>
+          <Image src={collegeLogo} style={styles.logo} />
           <Text style={styles.title}>Admission Summary Report</Text>
-          <Text style={styles.subtitle}>Academic Year 2024</Text>
-        </View>
-
-        {/* Filter Summary */}
-        <View style={styles.filterSummary}>
-          <Text>
-            This report includes admissions {formattedFilters.status},
-            {formattedFilters.admissionType}, {formattedFilters.college}, and{" "}
-            {formattedFilters.program}.
+          <Text style={styles.subtitle}>
+            {filters.fromDate && filters.toDate ? (
+              <>
+                from {filters.fromDate} to {filters.toDate}
+              </>
+            ) : (
+              <>from {new Date().getFullYear()}</>
+            )}
           </Text>
         </View>
 
-        {/* Table Section */}
-        <View>
-          <Text style={styles.sectionTitle}>Detailed Admissions</Text>
+        <Text style={styles.text}>Admission Type: {filters.admissionType}</Text>
+        <Text style={styles.text}>{admissionTypeText}</Text>
+
+        <Text style={styles.sectionTitle}>Numerical Data</Text>
+        <Text style={styles.text}>Total Admissions: {totalCount}</Text>
+        <Text style={styles.text}>Complete Admissions: {completeCount}</Text>
+        <Text style={styles.text}>
+          Incomplete Admissions: {incompleteCount}
+        </Text>
+      </Page>
+
+      {/* Second Page */}
+      {shouldRenderIncompletePage && (
+        <Page style={styles.page}>
+          <View style={styles.header}>
+            <Text style={styles.title}>Incomplete Admissions Report</Text>
+          </View>
+
+          <Text style={styles.sectionTitle}>
+            Students with Incomplete Requirements
+          </Text>
           <View style={styles.table}>
             {/* Table Header */}
             <View style={styles.tableHeader}>
-              <Text style={[styles.tableCell, { flex: 1 }]}>Student ID</Text>
               <Text style={[styles.tableCell, { flex: 2 }]}>Name</Text>
               <Text style={[styles.tableCell, { flex: 1.5 }]}>Course</Text>
-              <Text style={[styles.tableCell, { flex: 1 }]}>Type</Text>
-              <Text style={[styles.tableCell, { flex: 1 }]}>Status</Text>
-              <Text style={[styles.tableCell, { flex: 1.5 }]}>Date</Text>
+              <Text style={[styles.tableCell, { flex: 2 }]}>
+                Missing Requirements
+              </Text>
             </View>
 
             {/* Table Rows */}
-            {admissionData.map((admission) => (
-              <View style={styles.tableRow} key={admission.id}>
-                <Text style={[styles.tableCell, { flex: 1 }]}>
-                  {admission.studentId}
-                </Text>
-                <Text style={[styles.tableCell, { flex: 2 }]}>
-                  {admission.student.firstName} {admission.student.middleName}{" "}
-                  {admission.student.lastName}
-                </Text>
-                <Text style={[styles.tableCell, { flex: 1.5 }]}>
-                  {admission.student.course}
-                </Text>
-                <Text style={[styles.tableCell, { flex: 1 }]}>
-                  {admission.admissionType}
-                </Text>
-                <Text style={[styles.tableCell, { flex: 1 }]}>
-                  {admission.status}
-                </Text>
-                <Text style={[styles.tableCell, { flex: 1.5 }]}>
-                  {new Date(admission.createdAt).toLocaleDateString()}
-                </Text>
-              </View>
-            ))}
-          </View>
-        </View>
+            {admissionData
+              .filter((admission) => admission.status === "Incomplete")
+              .map((admission) => {
+                const missingRequirements = admission.requirements
+                  .filter((req: any) => !req.isSubmitted)
+                  .map((req: any) => req.name)
+                  .join(", ");
 
-        {/* Footer */}
-        <View style={styles.footer}>
-          <Text>&copy; 2024 Admission Office. All rights reserved.</Text>
-        </View>
-      </Page>
+                return (
+                  <View style={styles.tableRow} key={admission.id}>
+                    <Text style={[styles.tableCell, { flex: 2 }]}>
+                      {admission.student.firstName}{" "}
+                      {admission.student.middleName}{" "}
+                      {admission.student.lastName}
+                    </Text>
+                    <Text style={[styles.tableCell, { flex: 1.5 }]}>
+                      {admission.student.course}
+                    </Text>
+                    <Text style={[styles.tableCell, { flex: 2 }]}>
+                      {missingRequirements}
+                    </Text>
+                  </View>
+                );
+              })}
+          </View>
+        </Page>
+      )}
     </Document>
   );
 };

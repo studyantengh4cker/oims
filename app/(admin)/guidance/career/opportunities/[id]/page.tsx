@@ -30,6 +30,8 @@ export default async function OpportunityPage({ params }: { params: any }) {
             description: opportunity.description,
             department: opportunity.department,
             program: opportunity.program,
+            start: new Date(opportunity.start).toISOString().slice(0, 16),
+            venue: opportunity.venue,
           }}
         />
       </section>

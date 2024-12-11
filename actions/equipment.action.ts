@@ -264,6 +264,7 @@ export async function getAllBorrowHistory() {
               select: {
                 id: true,
                 summary: true, // Event summary
+                colorId: true,
               },
             },
           },

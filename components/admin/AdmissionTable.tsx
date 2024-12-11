@@ -25,12 +25,14 @@ export function AdmissionTable({ data }: { data: any[] }) {
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 5;
 
+  console.log(data);
+
   // Filter data based on search term and selected status
   const filteredData = data
     .filter((admission) => {
-      const fullName = `${admission.firstName} ${admission.middleName || ""} ${
-        admission.lastName
-      }`;
+      const fullName = `${admission.student.firstName} ${
+        admission.student.middleName || ""
+      } ${admission.student.lastName}`;
       return fullName.toLowerCase().includes(searchTerm.toLowerCase());
     })
     .filter((admission) => {

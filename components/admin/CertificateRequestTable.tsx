@@ -112,6 +112,7 @@ export function CertificateRequestTable({ data }: { data: any[] }) {
             <TableHead>Status</TableHead>
             <TableHead>Name</TableHead>
             <TableHead>Student ID</TableHead>
+            <TableHead>Has Violation</TableHead>
             <TableHead>Date Created</TableHead>
             <TableHead>Action</TableHead>
           </TableRow>
@@ -129,6 +130,18 @@ export function CertificateRequestTable({ data }: { data: any[] }) {
                 </TableCell>
                 <TableCell>{request.name}</TableCell>
                 <TableCell>{request.studentId}</TableCell>
+                <TableCell>
+                  {request.hasViolation ? (
+                    <Link
+                      href={`/osas/notes/${request.studentId}`}
+                      className="hover:text-blue-600 underline"
+                    >
+                      Has Unresolved Voilations
+                    </Link>
+                  ) : (
+                    "None"
+                  )}
+                </TableCell>
                 <TableCell>
                   {new Date(request.dateCreated).toLocaleDateString()}
                 </TableCell>

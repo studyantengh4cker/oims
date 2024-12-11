@@ -80,7 +80,7 @@ export const departments = [
     name: "College Of Arts and Sciences",
     shortname: "CAS",
     logo: "/colleges/cas.png",
-    colorId: "0",
+    colorId: "6",
     programs: [
       {
         name: "Bachelor of Arts in English Language",
@@ -104,7 +104,7 @@ export const departments = [
     name: "College of Business Administration",
     shortname: "CBA",
     logo: "/colleges/cba.png",
-    colorId: "0", // No match found
+    colorId: "5", // No match found
     programs: [
       {
         name: "Bachelor of Science in Business Administration",
@@ -116,7 +116,7 @@ export const departments = [
     name: "Basic Education Department",
     shortname: "BED",
     logo: "/colleges/ced.png",
-    colorId: "0", // No match found
+    colorId: "4", // No match found
     programs: [
       {
         name: "Elementary Education",
@@ -144,4 +144,26 @@ export const departments = [
       },
     ],
   },
+];
+
+export const venues = [
+  "Covered Court",
+  "School Ground",
+  "Auditorium",
+  "Library",
+  "QUAD/CC",
+  "OSAS Activity Area",
+  "Accreditation Room",
+  "Off-campus",
+  "CC/AVR1/QUAD",
+  "CC/AVR 1",
+  "Others",
+  "ICT Room",
+  "Computer Laboratory",
+  "Volleyball Court",
+  "Basketball Court",
+  "Stage",
+  "Quadrangle",
+  "AVR 2",
+  "AVR 1",
 ];

@@ -6,6 +6,9 @@ import { Button } from "@/components/ui/button";
 
 export default async function AdmissionPage() {
   const admissions = await getAdmissionByNumber("2");
+
+  console.log(admissions);
+
   if (!admissions) return;
   return (
     <main className="p-10">

@@ -1,199 +1,221 @@
 import React from "react";
-import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
+import {
+  Document,
+  Page,
+  Text,
+  View,
+  StyleSheet,
+  Image,
+} from "@react-pdf/renderer";
+import { departments } from "@/lib/globals";
 
-// Create styles for the document
+// Define professional styles for the report
 const styles = StyleSheet.create({
   page: {
-    padding: 30,
+    padding: 40,
     fontFamily: "Helvetica",
+    fontSize: 11,
+    lineHeight: 1.6,
+    color: "#333",
   },
   header: {
     textAlign: "center",
+    marginBottom: 30,
+  },
+  logo: {
+    width: 100,
+    height: 100,
     marginBottom: 20,
+    alignSelf: "center",
   },
   title: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: "bold",
+    marginBottom: 5,
+    color: "#2c3e50",
   },
-  section: {
-    marginBottom: 20,
+  subtitle: {
+    fontSize: 12,
+    color: "#7f8c8d",
+  },
+  sectionTitle: {
+    fontSize: 14,
+    fontWeight: "bold",
+    marginBottom: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#bdc3c7",
+    paddingBottom: 5,
+    color: "#2c3e50",
+  },
+  text: {
+    marginBottom: 10,
+    fontSize: 10,
+    color: "#34495e",
   },
   table: {
+    marginTop: 10,
     width: "100%",
-    marginBottom: 10,
-    display: "flex",
-    flexDirection: "column",
-  },
-  tableRow: {
-    display: "flex",
-    flexDirection: "row",
-    padding: 8,
+    borderWidth: 1,
+    borderColor: "#bdc3c7",
+    borderRadius: 5,
+    overflow: "hidden",
   },
   tableHeader: {
-    backgroundColor: "#f0f0f0",
+    flexDirection: "row",
+    backgroundColor: "#800000",
+    color: "#ecf0f1",
+    padding: 10,
     fontWeight: "bold",
+  },
+  tableRow: {
+    flexDirection: "row",
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ecf0f1",
   },
   tableCell: {
     flex: 1,
-    borderWidth: 1,
-    borderColor: "#e0e0e0",
-    padding: 8,
-    fontSize: 10,
+    paddingHorizontal: 5,
   },
   footer: {
     textAlign: "center",
     fontSize: 10,
-    color: "#888",
-    marginTop: 30,
-  },
-  countHeader: {
-    fontSize: 12,
-    marginBottom: 10,
-  },
-  incompleteTable: {
-    marginTop: 20,
-    width: "100%",
-    marginBottom: 10,
-    display: "flex",
-    flexDirection: "column",
-  },
-  incompleteTableRow: {
-    display: "flex",
-    flexDirection: "row",
-    padding: 8,
+    color: "#7f8c8d",
   },
 });
 
 // EventSummaryReport Component
-const EventSummaryReport = ({ events }: { events: any[] }) => {
-  // Count events that don't have an evaluation report or post-activity requirements
-  const incompleteEventsCount = events.filter(
-    (event) => !event.hasEvaluationReport || !event.hasPostActivityRequirements
+const EventSummaryReport = ({
+  events,
+  filters,
+}: {
+  events: any[];
+  filters: {
+    status: string;
+    eventType: string;
+    college: string;
+    fromDate: string;
+    toDate: string;
+  };
+}) => {
+  // Count events based on status (complete/incomplete)
+  const completeCount = events.filter(
+    (event) =>
+      event.hasEvaluationReport === true &&
+      event.hasPostActivityRequirements === true
   ).length;
 
-  // Filter events with incomplete requirements
-  const incompleteEvents = events.filter(
-    (event) => !event.hasEvaluationReport || !event.hasPostActivityRequirements
-  );
+  const incompleteCount = events.filter(
+    (event) =>
+      event.hasEvaluationReport === false ||
+      event.hasPostActivityRequirements === false
+  ).length;
+
+  const totalCount = events.length;
+
+  // Determine displayed text based on filters
+  const eventTypeText =
+    filters.college === "All"
+      ? "Events from All Colleges"
+      : `Events from ${
+          departments.find((dept) => dept.colorId === filters.college)?.name
+        }`;
+
+  // Determine the logo to display based on the selected college
+  const collegeLogo =
+    filters.college === "All"
+      ? "/logo.png"
+      : departments.find((dept) => dept.colorId === filters.college)?.logo ||
+        "/logo.png";
+
+  // Determine if the second page with missing requirements should be shown
+  const shouldRenderIncompletePage =
+    filters.status === "All" || filters.status === "Incomplete";
 
   return (
     <Document>
+      {/* First Page */}
       <Page style={styles.page}>
-        {/* Header Section */}
         <View style={styles.header}>
-          <Text style={styles.title}>School Event Summary Report</Text>
-          <Text>Summary of events and borrowed equipment</Text>
-
-          {/* Count of Incomplete Events */}
-          <Text style={styles.countHeader}>
-            Number of events with incomplete requirements (missing Evaluation or
-            Post-Activity Requirements): {incompleteEventsCount}
+          <Image src={collegeLogo} style={styles.logo} />
+          <Text style={styles.title}>Event Summary Report</Text>
+          <Text style={styles.subtitle}>
+            {filters.fromDate && filters.toDate ? (
+              <>
+                from {filters.fromDate} to {filters.toDate}
+              </>
+            ) : (
+              <>from {new Date().getFullYear()}</>
+            )}
           </Text>
         </View>
 
-        {/* Event Details Table Section */}
-        <View style={styles.section}>
-          {events.map((event) => (
-            <View key={event.id} style={styles.table}>
-              {/* Event Header */}
-              <View style={styles.tableRow}>
-                <Text style={[styles.tableCell, styles.tableHeader]}>
-                  Event Type
-                </Text>
-                <Text style={[styles.tableCell, styles.tableHeader]}>
-                  Event Summary
-                </Text>
-                <Text style={[styles.tableCell, styles.tableHeader]}>
-                  Location
-                </Text>
-                <Text style={[styles.tableCell, styles.tableHeader]}>
-                  Start Time
-                </Text>
-                <Text style={[styles.tableCell, styles.tableHeader]}>
-                  End Time
-                </Text>
-              </View>
-              <View style={styles.tableRow}>
-                <Text style={styles.tableCell}>{event.eventType}</Text>
-                <Text style={styles.tableCell}>{event.summary}</Text>
-                <Text style={styles.tableCell}>{event.location || "N/A"}</Text>
-                <Text style={styles.tableCell}>
-                  {new Date(event.start).toLocaleString()}
-                </Text>
-                <Text style={styles.tableCell}>
-                  {new Date(event.end).toLocaleString()}
-                </Text>
-              </View>
+        <Text style={styles.text}>Event Type: {filters.eventType}</Text>
+        <Text style={styles.text}>{eventTypeText}</Text>
 
-              {/* Borrowed Equipment Header */}
-              <View style={styles.tableRow}>
-                <Text style={[styles.tableCell, styles.tableHeader]}>
-                  Equipment Name
-                </Text>
-                <Text style={[styles.tableCell, styles.tableHeader]}>
-                  Brand
-                </Text>
-                <Text style={[styles.tableCell, styles.tableHeader]}>
-                  Quantity Requested
-                </Text>
-                <Text style={[styles.tableCell, styles.tableHeader]}>
-                  Status
-                </Text>
-              </View>
-
-              {/* Borrowed Equipment Rows */}
-              {event.EquipmentRequest.map((request: { equipments: any[] }) =>
-                request.equipments.map((reqEquip) => (
-                  <View style={styles.tableRow} key={reqEquip.id}>
-                    <Text style={styles.tableCell}>
-                      {reqEquip.equipment.name}
-                    </Text>
-                    <Text style={styles.tableCell}>
-                      {reqEquip.equipment.brand}
-                    </Text>
-                    <Text style={styles.tableCell}>{reqEquip.quantity}</Text>
-                    <Text style={styles.tableCell}>{reqEquip.status}</Text>
-                  </View>
-                ))
-              )}
-            </View>
-          ))}
-        </View>
-
-        {/* Footer */}
-        <View style={styles.footer}>
-          <Text>&copy; 2024 School Event Management</Text>
-        </View>
+        <Text style={styles.sectionTitle}>Numerical Data</Text>
+        <Text style={styles.text}>Total Events: {totalCount}</Text>
+        <Text style={styles.text}>Complete Events: {completeCount}</Text>
+        <Text style={styles.text}>Incomplete Events: {incompleteCount}</Text>
       </Page>
 
-      {incompleteEvents.length > 0 && (
-        <Page>
-          <View style={styles.incompleteTable}>
-            <Text style={[styles.tableHeader, { textAlign: "center" }]}>
-              Events with Incomplete Requirements
-            </Text>
-            {incompleteEvents.map(
-              (event) =>
-                // Only display events that are missing requirements
-                (!event.hasEvaluationReport ||
-                  !event.hasPostActivityRequirements) && (
-                  <View style={styles.incompleteTableRow} key={event.id}>
-                    <Text style={styles.tableCell}>{event.summary}</Text>
-                    <Text style={styles.tableCell}>
-                      {!event.hasEvaluationReport
-                        ? "Missing Evaluation Report"
-                        : ""}
-                      {!event.hasPostActivityRequirements
-                        ? "Missing Post Activity Requirements"
-                        : ""}
+      {/* Second Page - Incomplete Events */}
+      {shouldRenderIncompletePage && (
+        <Page style={styles.page}>
+          <View style={styles.header}>
+            <Text style={styles.title}>Incomplete Events Report</Text>
+          </View>
+
+          <Text style={styles.sectionTitle}>
+            Events with Incomplete Requirements
+          </Text>
+          <View style={styles.table}>
+            {/* Table Header */}
+            <View style={styles.tableHeader}>
+              <Text style={[styles.tableCell, { flex: 2 }]}>
+                Event Organizer
+              </Text>
+              <Text style={[styles.tableCell, { flex: 2 }]}>Event Summary</Text>
+              <Text style={[styles.tableCell, { flex: 1.5 }]}>
+                Missing Requirements
+              </Text>
+            </View>
+
+            {/* Table Rows for Incomplete Events */}
+            {events
+              .filter(
+                (event) =>
+                  event.status === "Incomplete" ||
+                  !event.hasEvaluationReport ||
+                  !event.hasPostActivityRequirements
+              )
+              .map((event) => {
+                const missingRequirements = [
+                  !event.hasEvaluationReport ? "Missing Evaluation Report" : "",
+                  !event.hasPostActivityRequirements
+                    ? "Missing Post Activity Requirements"
+                    : "",
+                ]
+                  .filter(Boolean)
+                  .join(", ");
+                return (
+                  <View style={styles.tableRow} key={event.id}>
+                    <Text style={[styles.tableCell, { flex: 2 }]}>
+                      {
+                        departments.find(
+                          (dept) => dept.colorId === event.colorId
+                        )?.shortname
+                      }
+                    </Text>
+                    <Text style={[styles.tableCell, { flex: 2 }]}>
+                      {event.summary}
+                    </Text>
+                    <Text style={[styles.tableCell, { flex: 1.5 }]}>
+                      {missingRequirements || "None"}
                     </Text>
                   </View>
-                )
-            )}
-          </View>
-          {/* Footer */}
-          <View style={styles.footer}>
-            <Text>&copy; 2024 School Event Management</Text>
+                );
+              })}
           </View>
         </Page>
       )}

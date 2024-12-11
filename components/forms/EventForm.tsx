@@ -26,6 +26,7 @@ import { Button } from "../ui/button";
 import { createEvent, updateEvent } from "@/actions/event.action";
 import { useEffect, useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
+import { venues } from "@/lib/globals";
 
 // Schema with new fields: eventType, hasEvaluationReport, and hasPostActivityRequirements
 export const eventFormSchema = z.object({
@@ -68,8 +69,6 @@ export function EventForm({ defaultValues }: EventFormProps) {
     },
   });
 
-  const venues = ["Covered Court", "School Ground", "Auditorium", "Library"];
-
   useEffect(() => {
     if (defaultValues?.location && defaultValues.isWithinSchool) {
       setSelectedVenues(defaultValues.location.split(", "));
@@ -95,7 +94,7 @@ export function EventForm({ defaultValues }: EventFormProps) {
           })
           .catch((error) => console.error("Failed to update event:", error));
       } else {
-        createEvent(values)
+        await createEvent(values)
           .then(() => {
             router.push("/osas/events");
           })
@@ -172,19 +171,21 @@ export function EventForm({ defaultValues }: EventFormProps) {
         {form.watch("isWithinSchool") ? (
           <div className="space-y-4">
             <FormLabel>Select Venues:</FormLabel>
-            {venues.map((venue) => (
-              <FormItem key={venue} className="flex items-center space-x-3">
-                <FormControl>
-                  <Checkbox
-                    checked={selectedVenues.includes(venue)}
-                    onCheckedChange={(isChecked) =>
-                      handleVenueChange(venue, Boolean(isChecked))
-                    }
-                  />
-                </FormControl>
-                <FormLabel>{venue}</FormLabel>
-              </FormItem>
-            ))}
+            <div className="flex flex-wrap gap-4">
+              {venues.map((venue) => (
+                <FormItem key={venue} className="flex items-center space-x-3">
+                  <FormControl>
+                    <Checkbox
+                      checked={selectedVenues.includes(venue)}
+                      onCheckedChange={(isChecked) =>
+                        handleVenueChange(venue, Boolean(isChecked))
+                      }
+                    />
+                  </FormControl>
+                  <FormLabel>{venue}</FormLabel>
+                </FormItem>
+              ))}
+            </div>
           </div>
         ) : (
           <FormField
@@ -247,6 +248,7 @@ export function EventForm({ defaultValues }: EventFormProps) {
                 <SelectContent>
                   <SelectItem value="10">CCS</SelectItem>
                   <SelectItem value="6">CAS</SelectItem>
+                  <SelectItem value="5">CBA</SelectItem>
                   <SelectItem value="4">CED</SelectItem>
                   <SelectItem value="9">COE</SelectItem>
                   <SelectItem value="8">COC</SelectItem>

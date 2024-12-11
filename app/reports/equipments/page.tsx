@@ -1,9 +1,7 @@
 "use client";
 
-import { PDFViewer } from "@react-pdf/renderer";
 import { useEffect, useState } from "react";
-import { getAllEvents } from "@/actions/event.action";
-import EventSummaryReport from "./EventReport";
+import { getAllBorrowHistory, getEquipments } from "@/actions/equipment.action";
 import Loading from "@/components/Loading";
 import {
   Select,
@@ -13,64 +11,62 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label"; // Import Label from ShadCN
-import { departments } from "@/lib/globals";
+import { departments } from "@/lib/globals"; // Assuming `departments` contains department data
+import { EquipmentReport } from "./EquipmentReport";
+import { PDFViewer } from "@react-pdf/renderer";
 
-export default function EventsReportPage() {
-  const [events, setEvents] = useState<any[]>([]);
-  const [filteredEvents, setFilteredEvents] = useState<any[]>([]);
+export default function EquipmentsReportPage() {
+  const [equipments, setEquipments] = useState<any[]>([]);
+  const [history, setHistory] = useState<any[]>([]);
+  const [filteredHistory, setFilteredHistory] = useState<any[]>([]);
   const [isClient, setIsClient] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string>("All");
-  const [typeFilter, setTypeFilter] = useState<string>("All");
   const [departmentFilter, setDepartmentFilter] = useState<string>("All");
   const [fromDate, setFromDate] = useState<string>("");
   const [toDate, setToDate] = useState<string>("");
 
   useEffect(() => {
-    async function fetchEvents() {
-      const events = await getAllEvents();
-      setEvents(events || []);
-      setFilteredEvents(events || []);
+    async function fetchData() {
+      const historyData = await getAllBorrowHistory();
+      setEquipments((await getEquipments()) || []);
+      setHistory(historyData || []);
+      setFilteredHistory(historyData || []);
     }
-    fetchEvents();
-
+    fetchData();
     setIsClient(true);
   }, []);
 
   useEffect(() => {
-    let filtered = events;
-
-    // Filter by status
-    if (statusFilter !== "All") {
-      filtered = filtered.filter((event) => event.status === statusFilter);
-    }
-
-    // Filter by type
-    if (typeFilter !== "All") {
-      filtered = filtered.filter((event) => event.eventType === typeFilter);
-    }
+    let filtered = history;
 
     // Filter by department
     if (departmentFilter !== "All") {
-      filtered = filtered.filter((event) =>
-        event.colorId.includes(departmentFilter)
-      ); // Adjust according to your data structure
+      filtered = filtered.filter(
+        (item) => item.request.event.colorId === departmentFilter
+      );
     }
 
-    // Apply date filtering
+    // Filter by status
+    if (statusFilter !== "All") {
+      filtered = filtered.filter((item) => item.status === statusFilter);
+    }
+
+    // Filter by fromDate
     if (fromDate) {
       filtered = filtered.filter(
-        (event) => new Date(event.start) >= new Date(fromDate)
+        (item) => new Date(item.request.dateRequested) >= new Date(fromDate)
       );
     }
 
+    // Filter by toDate
     if (toDate) {
       filtered = filtered.filter(
-        (event) => new Date(event.start) <= new Date(toDate)
+        (item) => new Date(item.request.dateRequested) <= new Date(toDate)
       );
     }
 
-    setFilteredEvents(filtered);
-  }, [statusFilter, typeFilter, departmentFilter, fromDate, toDate, events]);
+    setFilteredHistory(filtered);
+  }, [statusFilter, departmentFilter, fromDate, toDate, history]);
 
   if (!isClient) return <Loading />;
 
@@ -79,69 +75,41 @@ export default function EventsReportPage() {
       {/* Filter Section */}
       <div className="flex flex-wrap space-x-4 p-4">
         {/* Status Filter */}
-        <div className="">
+        <div>
           <Label
             htmlFor="status-filter"
             className="mb-2 text-primary-foreground"
           >
             Filter by Status
           </Label>
-          <Select
-            value={statusFilter}
-            onValueChange={(value) => setStatusFilter(value)}
-          >
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
             <SelectTrigger className="bg-white" id="status-filter">
               <SelectValue placeholder="Select Status" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="All">All</SelectItem>
-              <SelectItem value="Approved">Approved</SelectItem>
-              <SelectItem value="Pending">Pending</SelectItem>
-              <SelectItem value="Completed">Completed</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Type Filter */}
-        <div className="">
-          <Label htmlFor="type-filter" className="mb-2 text-primary-foreground">
-            Filter by Type
-          </Label>
-          <Select
-            value={typeFilter}
-            onValueChange={(value) => setTypeFilter(value)}
-          >
-            <SelectTrigger className="bg-white" id="type-filter">
-              <SelectValue placeholder="Select Type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="All">All</SelectItem>
-              <SelectItem value="Non-Curricular">Non-Curricular</SelectItem>
-              <SelectItem value="Curricular">Curricular</SelectItem>
-              <SelectItem value="Co-Curricular">Co-Curricular</SelectItem>
+              <SelectItem value="Not Returned">Not Returned</SelectItem>
+              <SelectItem value="Returned">Returned</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
         {/* Department Filter */}
-        <div className="">
+        <div>
           <Label
             htmlFor="department-filter"
             className="mb-2 text-primary-foreground"
           >
             Filter by Department
           </Label>
-          <Select
-            value={departmentFilter}
-            onValueChange={(value) => setDepartmentFilter(value)}
-          >
+          <Select value={departmentFilter} onValueChange={setDepartmentFilter}>
             <SelectTrigger className="bg-white" id="department-filter">
               <SelectValue placeholder="Select Department" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="All">All</SelectItem>
               {departments.map((dept) => (
-                <SelectItem key={dept.name} value={dept.colorId}>
+                <SelectItem key={dept.colorId} value={dept.colorId}>
                   {dept.name}
                 </SelectItem>
               ))}
@@ -150,41 +118,39 @@ export default function EventsReportPage() {
         </div>
 
         {/* From Date Filter */}
-        <div className="">
+        <div>
           <Label htmlFor="from-date" className="mb-2 text-primary-foreground">
             From Date
           </Label>
           <input
             type="date"
             id="from-date"
-            className="bg-white border border-gray-300 rounded px-2 py-1 w-full"
             value={fromDate}
             onChange={(e) => setFromDate(e.target.value)}
+            className="bg-white border border-gray-300 rounded px-2 py-1 w-full"
           />
         </div>
 
         {/* To Date Filter */}
-        <div className="">
+        <div>
           <Label htmlFor="to-date" className="mb-2 text-primary-foreground">
             To Date
           </Label>
           <input
             type="date"
             id="to-date"
-            className="bg-white border border-gray-300 rounded px-2 py-1 w-full"
             value={toDate}
             onChange={(e) => setToDate(e.target.value)}
+            className="bg-white border border-gray-300 rounded px-2 py-1 w-full"
           />
         </div>
       </div>
-
-      {/* PDF Viewer */}
       <PDFViewer className="w-full h-screen">
-        <EventSummaryReport
-          events={filteredEvents}
+        <EquipmentReport
+          borrowHistory={filteredHistory}
+          equipments={equipments}
           filters={{
             status: statusFilter,
-            eventType: typeFilter,
             college: departmentFilter,
             fromDate,
             toDate,

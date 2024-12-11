@@ -53,11 +53,12 @@ model Student {
 }
 
 model DisciplinaryNote {
-  id        String   @id @default(uuid())
-  dateGiven DateTime
-  note      String
-  student   Student  @relation(fields: [studentId], references: [studentId])
-  studentId String // Foreign key to relate to Student
+  id         String   @id @default(uuid())
+  dateGiven  DateTime
+  note       String
+  isResolved Boolean  @default(false)
+  student    Student  @relation(fields: [studentId], references: [studentId])
+  studentId  String // Foreign key to relate to Student
 }
 
 model EquipmentRequest {
@@ -121,6 +122,8 @@ model Opportunity {
   title       String
   description String
   department  String
+  venue       String
+  start       DateTime
   program     String
   dateCreated DateTime @default(now())
 }
@@ -140,4 +143,5 @@ model CertificateRequest {
   status          String
   dateCreated     DateTime @default(now())
   updatedAt       DateTime @updatedAt
+  hasViolation    Boolean  @default(false)
 }

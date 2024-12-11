@@ -107,6 +107,7 @@ export async function updateNote(data: NoteFormData) {
           create: data.disciplinaryNotes.map((note) => ({
             note: note.note,
             dateGiven: new Date(note.dateGiven),
+            isResolved: note.isResolved,
           })), // Create new requirements
         },
       },

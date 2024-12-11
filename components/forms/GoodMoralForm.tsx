@@ -44,9 +44,11 @@ export default function CertificateForm() {
 
   const [hasViolation, setHasViolation] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
 
   const handleCreate = async (e: any) => {
     e.preventDefault();
+    setSubmitting(true);
     await createCertificate({
       certificateType: "Good Moral",
       status: "Pending",
@@ -56,6 +58,7 @@ export default function CertificateForm() {
       osasDean,
       cocDean: selectedCollege === "College of Criminology" ? cocDean : null,
       controlNumber,
+      hasViolation,
     });
   };
 
@@ -187,7 +190,7 @@ export default function CertificateForm() {
         />
       </div>
       <div>
-        <Button>Submit</Button>
+        <Button disabled={submitting}>Submit</Button>
       </div>
     </form>
   );

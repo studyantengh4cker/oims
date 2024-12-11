@@ -15,6 +15,7 @@ export const createOpportunity = async (data: OpportunityFormData) => {
     await prisma.opportunity.create({
       data: {
         ...data,
+        start: new Date(data.start),
       },
     });
     revalidatePath("/");

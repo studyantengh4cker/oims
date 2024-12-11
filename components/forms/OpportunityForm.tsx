@@ -21,7 +21,7 @@ import {
 } from "../ui/select";
 import { Button } from "../ui/button";
 import { useState } from "react";
-import { departments } from "@/lib/globals"; // Example: List of departments
+import { departments, venues } from "@/lib/globals"; // Example: List of departments
 import { useToast } from "@/hooks/use-toast";
 import { createOpportunity } from "@/actions/opportunity.action"; // Assuming these functions exist
 //import { useRouter } from "next/navigation";
@@ -31,6 +31,8 @@ const schema = z.object({
   id: z.string().optional(),
   title: z.string().min(2, "Title is required"),
   description: z.string().min(10, "Description is required"),
+  start: z.string().min(1, "Start date and time are required"),
+  venue: z.string().min(1, "End date and time are required"),
   department: z.string().min(1, "Department is required"),
   program: z.string().min(1, "Program is required"),
 });
@@ -55,6 +57,8 @@ export function OpportunityForm({ defaultValues }: OpportunityFormProps) {
     defaultValues: defaultValues || {
       title: "",
       description: "",
+      start: "",
+      venue: "",
       department: "",
       program: "",
     },
@@ -122,6 +126,45 @@ export function OpportunityForm({ defaultValues }: OpportunityFormProps) {
               <FormControl>
                 <Input placeholder="Description" {...field} />
               </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        {/* Start DateTime Field */}
+        <FormField
+          control={form.control}
+          name="start"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Start Date and Time</FormLabel>
+              <FormControl>
+                <Input type="datetime-local" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="venue"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Venue</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select venue" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {venues.map((venue, i) => (
+                    <SelectItem value={venue} key={i}>
+                      {venue}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}

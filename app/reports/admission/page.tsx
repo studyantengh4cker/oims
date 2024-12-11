@@ -25,6 +25,10 @@ export default function AdmissionReportsPage() {
   const [availablePrograms, setAvailablePrograms] = useState<any[]>([]);
   const [isClient, setIsClient] = useState(false);
 
+  // Date filters
+  const [fromDate, setFromDate] = useState<string>("");
+  const [toDate, setToDate] = useState<string>("");
+
   useEffect(() => {
     async function fetchAdmissions() {
       const admissions = await getAllAdmission();
@@ -61,6 +65,18 @@ export default function AdmissionReportsPage() {
         (admission) => admission.student.program === programFilter
       );
     }
+    // Apply date filtering
+    if (fromDate) {
+      filtered = filtered.filter(
+        (admission) => new Date(admission.createdAt) >= new Date(fromDate)
+      );
+    }
+
+    if (toDate) {
+      filtered = filtered.filter(
+        (admission) => new Date(admission.createdAt) <= new Date(toDate)
+      );
+    }
 
     setFilteredAdmissions(filtered);
   }, [
@@ -68,6 +84,8 @@ export default function AdmissionReportsPage() {
     admissionTypeFilter,
     collegeFilter,
     programFilter,
+    fromDate,
+    toDate,
     admissions,
   ]);
 
@@ -85,9 +103,9 @@ export default function AdmissionReportsPage() {
   return (
     <main className="bg-primary">
       {/* Filter Section */}
-      <div className="flex space-x-4 p-4">
+      <div className="flex flex-wrap space-x-4 p-4">
         {/* Status Filter */}
-        <div className="w-1/5">
+        <div className="">
           <Label
             htmlFor="status-filter"
             className="mb-2 text-primary-foreground"
@@ -110,7 +128,7 @@ export default function AdmissionReportsPage() {
         </div>
 
         {/* Admission Type Filter */}
-        <div className="w-1/5">
+        <div className="">
           <Label
             htmlFor="admission-type-filter"
             className="mb-2 text-primary-foreground"
@@ -133,7 +151,7 @@ export default function AdmissionReportsPage() {
         </div>
 
         {/* College Filter */}
-        <div className="w-1/5">
+        <div className="">
           <Label
             htmlFor="college-filter"
             className="mb-2 text-primary-foreground"
@@ -159,7 +177,7 @@ export default function AdmissionReportsPage() {
         </div>
 
         {/* Program Filter */}
-        <div className="w-1/5">
+        <div className="">
           <Label
             htmlFor="program-filter"
             className="mb-2 text-primary-foreground"
@@ -183,8 +201,33 @@ export default function AdmissionReportsPage() {
             </SelectContent>
           </Select>
         </div>
-      </div>
 
+        {/* Date Filters */}
+        <div className="">
+          <Label htmlFor="from-date" className="mb-2 text-primary-foreground">
+            From Date
+          </Label>
+          <input
+            type="date"
+            id="from-date"
+            className="w-full bg-white border border-gray-300 rounded px-2 py-1"
+            value={fromDate}
+            onChange={(e) => setFromDate(e.target.value)}
+          />
+        </div>
+        <div className="">
+          <Label htmlFor="to-date" className="mb-2 text-primary-foreground">
+            To Date
+          </Label>
+          <input
+            type="date"
+            id="to-date"
+            className="w-full bg-white border border-gray-300 rounded px-2 py-1"
+            value={toDate}
+            onChange={(e) => setToDate(e.target.value)}
+          />
+        </div>
+      </div>
       {/* PDF Viewer */}
       <PDFViewer className="w-full h-screen mt-4">
         <AdmissionSummaryReport
@@ -194,6 +237,8 @@ export default function AdmissionReportsPage() {
             admissionType: admissionTypeFilter,
             college: collegeFilter,
             program: programFilter,
+            fromDate,
+            toDate,
           }}
         />
       </PDFViewer>

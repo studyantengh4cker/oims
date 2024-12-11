@@ -194,23 +194,14 @@ export async function deleteEvent(eventId: string) {
   }
 }
 
-export async function getEventsWithDetails() {
+export async function getAllEvents() {
   try {
     const events = await prisma.schoolEvent.findMany({
       orderBy: { start: "asc" },
-      take: 10,
-      include: {
-        EquipmentRequest: {
-          include: {
-            equipments: {
-              include: {
-                equipment: true, // Fetch the equipment details
-              },
-            },
-          },
-        },
-      },
     });
+
+    console.log(events);
+
     return events;
   } catch (error) {
     console.error("Error fetching events from database:", error);
