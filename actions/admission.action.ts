@@ -5,6 +5,8 @@ import prisma from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { createStudent, updateStudent } from "./student.action";
 import { createActivityLog } from "./log.action";
+import { auth } from "@/lib/auth";
+import { createNotif } from "./notifs.action";
 
 // Function to create admission with already existing student record
 export async function createAdmission(data: AdmissionFormData) {
@@ -39,7 +41,16 @@ export async function createAdmission(data: AdmissionFormData) {
     console.error("Error creating admission:", error);
     throw new Error("There was a problem creating the admission.");
   } finally {
-    await createActivityLog("Created an Admission", "Admission");
+    const session = await auth();
+
+    if (session) {
+      await createActivityLog("Created an Admission", "Admission");
+    } else {
+      await createNotif(data.admissionNo == "1" ? "GUIDANCE" : "OSAS", {
+        message: `Student created a ${data.admissionType} admission.`,
+        link: `/${data.admissionNo == "1" ? "guidance" : "osas"}/admission`,
+      });
+    }
   }
 }
 

@@ -237,7 +237,7 @@ export function EventForm({ defaultValues }: EventFormProps) {
           name="colorId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Event Color</FormLabel>
+              <FormLabel>Event Organizer</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>

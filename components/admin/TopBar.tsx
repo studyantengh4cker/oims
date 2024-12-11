@@ -3,8 +3,11 @@ import { FileIcon, MessageCircleQuestion } from "lucide-react";
 import Notifications from "./Notifications";
 import Image from "next/image";
 import { SideNav } from "./SideBar";
+import { auth } from "@/lib/auth";
 
 export async function Topbar() {
+  const session = await auth();
+
   return (
     <nav className="z-50 bg-primary text-white fixed w-full top-0 left-0 px-5 py-5 border-b-2 flex items-center gap-4 justify-between">
       <div className="flex items-center gap-8 flex-1">
@@ -25,7 +28,7 @@ export async function Topbar() {
           </Button>
         </div>
         <div className="flex items-center gap-4">
-          <Notifications />
+          <Notifications office={session?.user.office || ""} />
           <SideNav />
         </div>
       </div>

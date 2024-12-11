@@ -1,5 +1,7 @@
 "use client";
 
+import { BellIcon, AlertCircle, Mail, Info } from "lucide-react";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,52 +11,50 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "../ui/button";
-import { BellIcon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import {
+  collection,
+  query,
+  where,
+  orderBy,
+  onSnapshot,
+  Timestamp,
+} from "firebase/firestore";
+import { store } from "@/lib/firebase"; // Ensure this is your Firebase client instance
+import { formatDistanceToNow } from "date-fns";
 
-const initialNotifications = [
-  {
-    id: 1,
-    message:
-      "🚨 Equipment Alert: The following equipment has expired: Projector.",
-    isRead: false,
-  },
-  {
-    id: 2,
-    message:
-      "⚠️ Notice: Equipment Laptop has reached its expiration date. Ensure to replace or renew it.",
-    isRead: false,
-  },
-  {
-    id: 3,
-    message:
-      "📥 New Submission: A new student admission form has been submitted by John Doe. Check the details!",
-    isRead: false,
-  },
-  {
-    id: 4,
-    message:
-      "📄 New Admission Alert: Jane Smith has submitted her application. Review it in the admissions section.",
-    isRead: true,
-  },
-  {
-    id: 5,
-    message:
-      "📅 Upcoming Event: The Annual Sports Day is scheduled for November 15th at 10 AM. Don’t miss out!",
-    isRead: false,
-  },
-  {
-    id: 6,
-    message:
-      "🔔 Reminder: The Faculty Meeting is approaching on November 10th. Please make sure to prepare accordingly.",
-    isRead: true,
-  },
-];
+interface Notification {
+  id: string;
+  message: string;
+  link?: string;
+  isRead: boolean;
+  notifiedAt: any; // Adjust type based on Firestore timestamp (e.g., `FirebaseFirestore.Timestamp`)
+}
 
-export default function Notifications() {
-  const [notifications, setNotifications] = useState(initialNotifications);
+export default function Notifications({ office }: { office: string }) {
+  const [notifications, setNotifications] = useState<Notification[]>([]);
 
-  const handleNotificationClick = (id: number) => {
+  useEffect(() => {
+    if (!office) return; // Ensure office is provided
+
+    const q = query(
+      collection(store, "notifs"),
+      where("office", "==", office),
+      orderBy("notifiedAt", "desc") // Sort by `notifiedAt` in descending order
+    );
+
+    const unsubscribeNotifications = onSnapshot(q, (querySnapshot) => {
+      const notificationsArray = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as Notification[];
+      setNotifications(notificationsArray);
+    });
+
+    return () => unsubscribeNotifications(); // Cleanup listener on unmount
+  }, [office]);
+
+  const handleNotificationClick = (id: string) => {
     setNotifications((prev) =>
       prev.map((notification) =>
         notification.id === id
@@ -71,24 +71,67 @@ export default function Notifications() {
           <BellIcon />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-[300px] mr-4">
+      <DropdownMenuContent className="w-[350px] mr-4">
         <DropdownMenuLabel>Notifications</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        {notifications.map(({ id, message, isRead }) => (
-          <DropdownMenuItem
-            key={id}
-            onClick={() => handleNotificationClick(id)}
-            className={`flex items-center p-2 transition-colors duration-200 ${
-              isRead
-                ? "text-gray-500"
-                : "text-black bg-gray-100 hover:bg-gray-200"
-            }`}
-          >
-            {message}
-            {!isRead && <span className="ml-2 text-red-500">•</span>}{" "}
-            {/* Unread indicator */}
+        {notifications.length > 0 ? (
+          notifications.map(({ id, message, link, isRead, notifiedAt }) => {
+            const timeAgo = formatDistanceToNow(
+              notifiedAt instanceof Timestamp
+                ? notifiedAt.toDate()
+                : new Date(notifiedAt),
+              {
+                addSuffix: true,
+              }
+            );
+
+            return (
+              <DropdownMenuItem
+                key={id}
+                onClick={() => handleNotificationClick(id)}
+                className={`flex items-center gap-3 p-3 transition-colors duration-200 rounded-lg ${
+                  isRead
+                    ? "bg-white text-gray-500"
+                    : "bg-gray-100 text-black hover:bg-gray-200"
+                }`}
+              >
+                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/20 text-primary">
+                  {link ? (
+                    <Mail size={20} />
+                  ) : isRead ? (
+                    <Info size={20} />
+                  ) : (
+                    <AlertCircle size={20} />
+                  )}
+                </span>
+                <div className="flex flex-col flex-1">
+                  {link ? (
+                    <a
+                      href={link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-semibold line-clamp-2"
+                    >
+                      {message}
+                    </a>
+                  ) : (
+                    <span className="font-semibold line-clamp-2">
+                      {message}
+                    </span>
+                  )}
+                  <span className="text-xs text-gray-400">{timeAgo}</span>
+                </div>
+                {!isRead && (
+                  <span className="ml-2 text-red-500 font-bold">•</span>
+                )}
+              </DropdownMenuItem>
+            );
+          })
+        ) : (
+          <DropdownMenuItem className="text-gray-500">
+            No notifications
           </DropdownMenuItem>
-        ))}
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );

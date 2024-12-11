@@ -32,9 +32,7 @@ function getDeviceInfo() {
 export async function createActivityLog(action: string, system: string) {
   const session = await auth();
 
-  if (!session?.user) {
-    throw new Error("User is not authenticated");
-  }
+  if (!session?.user) return;
 
   const ipAddress = getIpAddress();
   const deviceInfo = getDeviceInfo();
