@@ -8,11 +8,9 @@ export function Topnav() {
         <h1 className="font-bold">OIMS</h1>
       </Link>
       <div className="md:flex items-center gap-12 flex-1 justify-center hidden">
+        <Link href={"/"}>Home</Link>
         <Link href={"/admission"}>Admission</Link>
-        <Link href={"/events"}>Events</Link>
-        <Link href={"/career"}>Career</Link>
-        <Link href={"/equipments"}>Equipments</Link>
-        <Link href={"/certificates"}>Certificates</Link>
+        <Link href={"/offices"}>Offices</Link>
       </div>
       <div className="flex-1 flex justify-end">
         <button className="px-6 py-2 rounded-md bg-white text-red-950">
