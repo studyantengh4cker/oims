@@ -68,7 +68,6 @@ export default function CertificateForm() {
       const notes = await getNotesByStudentId(studentId);
       if (notes) {
         setHasViolation(true);
-        console.log(notes);
       } else {
         setHasViolation(false);
       }

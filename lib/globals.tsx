@@ -23,7 +23,6 @@ export const osasLinks = [
 export const guidanceLinks = [
   { tag: "Dashboard", href: "/guidance", icon: <PieChartIcon /> },
   { tag: "Admission", href: "/guidance/admission", icon: <BookIcon /> },
-  { tag: "Disciplinary Notes", href: "/guidance/notes", icon: <Pin /> },
   { tag: "Career", href: "/guidance/career", icon: <HardHatIcon /> },
   { tag: "Logs", href: "/guidance/logs", icon: <BookDashed /> },
 ];

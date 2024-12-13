@@ -95,8 +95,6 @@ export async function getAllGraduatingStudents(): Promise<Student[] | null> {
       where: { classification: "Graduate" }, // Filter by classification
     });
 
-    console.log(graduatingStudents);
-
     return graduatingStudents; // Return the list of graduating students
   } catch (error) {
     console.error("Error fetching graduating students:", error);
@@ -113,8 +111,6 @@ export async function getGraduatingStudents(
     const graduatingStudents = await prisma.student.findMany({
       where: { classification: "Graduate", course, program }, // Filter by classification
     });
-
-    console.log(graduatingStudents);
 
     return graduatingStudents; // Return the list of graduating students
   } catch (error) {

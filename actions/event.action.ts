@@ -200,8 +200,6 @@ export async function getAllEvents() {
       orderBy: { start: "asc" },
     });
 
-    console.log(events);
-
     return events;
   } catch (error) {
     console.error("Error fetching events from database:", error);

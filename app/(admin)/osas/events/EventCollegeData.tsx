@@ -9,8 +9,6 @@ export default function EventCollegeData({
 }: {
   events: SchoolEvent[];
 }) {
-  console.log(events);
-
   // Count events and incomplete events per department
   const eventCounts = departments.map((department) => {
     const departmentEvents = events.filter(
