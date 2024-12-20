@@ -348,8 +348,14 @@ export function NotesForm({ defaultValues }: NoteFormProps) {
         </div>
 
         {/* Submit Button */}
-        <Button type="submit" disabled={loading} className="w-full md:w-auto">
-          {loading ? "Submitting..." : "Submit"}
+        <Button type="submit" disabled={loading}>
+          {loading
+            ? defaultValues
+              ? "Saving..."
+              : "Submitting..."
+            : defaultValues
+            ? "Save"
+            : "Submit"}
         </Button>
       </form>
     </Form>

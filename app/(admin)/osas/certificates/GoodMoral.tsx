@@ -41,6 +41,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     fontWeight: "bold",
     fontSize: 12,
+    textAlign: "center", // Added text alignment
   },
   text: {
     textAlign: "center",

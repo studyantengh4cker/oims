@@ -412,7 +412,13 @@ export function AdmissionForm({
         </div>
         {/* Submit Button */}
         <Button type="submit" disabled={loading}>
-          {loading ? "Submitting..." : "Submit"}
+          {loading
+            ? defaultValues
+              ? "Saving..."
+              : "Submitting..."
+            : defaultValues
+            ? "Save"
+            : "Submit"}
         </Button>
       </form>
     </Form>

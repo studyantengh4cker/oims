@@ -136,7 +136,7 @@ export function CertificateRequestTable({ data }: { data: any[] }) {
                       href={`/osas/notes/${request.studentId}`}
                       className="hover:text-blue-600 underline"
                     >
-                      Has Unresolved Voilations
+                      Has Voilations
                     </Link>
                   ) : (
                     "None"
