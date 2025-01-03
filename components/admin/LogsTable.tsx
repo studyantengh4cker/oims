@@ -14,7 +14,7 @@ import { Input } from "../ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "../ui/select";
 
 const roles = ["All", "ADMIN", "USER", "GUEST"];
-const offices = ["All", "GUIDANCE", "REGISTRAR", "FINANCE"];
+const offices = ["All", "GUIDANCE", "OSAS"];
 
 export function LogsTable({ data }: { data: any[] }) {
   const [searchTerm, setSearchTerm] = useState("");
